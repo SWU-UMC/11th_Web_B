@@ -2,7 +2,7 @@ console.log("Hello, Web!");
 
 const student = {
   name: "양지애",
-  skills: ["Spring Boot", "React", "JavaScript"]
+  skills: ["Spring Boot", "React", "JavaScript", "Docker"]
 };
 
 function printSkills(skills) {
@@ -22,5 +22,9 @@ const message = document.querySelector("#message");
 const greetingButton = document.querySelector("#greeting-button");
 
 greetingButton.addEventListener("click", function () {
-  message.textContent = "웹 개발을 시작합니다!";
+  if (message.textContent === "버튼을 눌러 주세요.") {
+    message.textContent = "웹 개발을 시작합니다!";
+  } else {
+    message.textContent = "버튼을 눌러 주세요.";
+  }
 });

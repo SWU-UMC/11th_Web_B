@@ -21,6 +21,11 @@ p {
   gap: 20px;
 }
 
+img {
+  width: 100%;
+  max-width: 300px;
+}
+
 button {
   background-color: #2563eb;
   color: white;
@@ -30,4 +35,10 @@ button {
 
 button:hover {
   background-color: #1d4ed8;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 10px;
+  }
 }

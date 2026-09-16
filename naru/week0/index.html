@@ -5,41 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>양지애 자기소개</title>
 
-  <style>
-    .card {
-      width: 80%;
-      max-width: 500px;
-      margin: 30px auto;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-    }
-
-    h1 {
-      color: #2563eb;
-      font-size: 32px;
-    }
-
-    p {
-      color: #666;
-    }
-
-    .skills {
-      display: flex;
-      gap: 20px;
-    }
-
-    button {
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-    }
-
-    button:hover {
-      background-color: #1d4ed8;
-    }
-  </style>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./script.js" defer></script>
 </head>
 
 <body>
@@ -55,7 +22,16 @@
         <li>Spring Boot</li>
         <li>React</li>
         <li>JavaScript</li>
+        <li>Docker</li>
       </ul>
+    </section>
+
+    <section>
+      <h2>이미지</h2>
+      <img
+        src="https://picsum.photos/600/400"
+        alt="자기소개 페이지에 사용하는 예시 이미지"
+      >
     </section>
 
     <section>
@@ -69,34 +45,5 @@
       <button id="greeting-button" type="button">클릭하세요!</button>
     </section>
   </main>
-
-  <script>
-    console.log("Hello, Web!");
-
-    const student = {
-      name: "양지애",
-      skills: ["Spring Boot", "React", "JavaScript"]
-    };
-
-    function printSkills(skills) {
-      for (const skill of skills) {
-        if (skill === "JavaScript") {
-          console.log(`${skill}: 화면에 동작을 더합니다.`);
-        } else {
-          console.log(skill);
-        }
-      }
-    }
-
-    console.log(student.name);
-    printSkills(student.skills);
-
-    const message = document.querySelector("#message");
-    const greetingButton = document.querySelector("#greeting-button");
-
-    greetingButton.addEventListener("click", function () {
-      message.textContent = "웹 개발을 시작합니다!";
-    });
-  </script>
 </body>
 </html>
