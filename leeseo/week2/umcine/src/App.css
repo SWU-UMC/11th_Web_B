@@ -1,0 +1,24 @@
+.headerGrid {
+    box-sizing: border-box;
+
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+    height: 91px;
+    padding: 24px 80px;
+}
+
+#headerLeft,
+#headerRight {
+  display: flex;
+  align-items: center;
+}
+
+#headerLeft {
+  gap: 20px;
+}
+
+#headerRight {
+  gap: 10px;
+}

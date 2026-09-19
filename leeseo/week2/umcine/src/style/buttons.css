@@ -1,0 +1,49 @@
+.textButton {
+  color: #606774;
+  background: none;
+  border: none;
+
+  font-size: 14px;
+}
+
+.textButton.selected {
+  color: #000000;
+  text-decoration: underline;
+}
+
+#blueButton {
+  box-sizing: border-box;
+
+  height: 42px;
+  padding: 8px 16px;
+
+  color: #ffffff;
+  background-color: #2563eb;
+
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+
+  font-family: "Pretendard", sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+#searchImageButton {
+  box-sizing: border-box;
+
+  width: 42px;
+  height: 42px;
+
+  padding: 1px 6px;
+
+  background-color: #ffffff;
+  border: 1px solid #e3e6eb;
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
