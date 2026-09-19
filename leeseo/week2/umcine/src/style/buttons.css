@@ -47,3 +47,30 @@
   align-items: center;
   justify-content: center;
 }
+
+#bookmarkButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  width: 34px;
+  height: 34px;
+  padding-top: 7.5px;
+  padding-right: 6px;
+  padding-bottom: 7.5px;
+  padding-left: 6px;
+
+  border-radius: 8px;
+  border: 1px solid #FFFFFF;
+  background-color: #17191E;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+#bookmarkButton.selected {
+  border-color: 1px solid #17191E;
+  background-color: #FFFFFF;
+}

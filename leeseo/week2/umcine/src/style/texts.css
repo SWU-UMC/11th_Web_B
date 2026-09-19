@@ -19,7 +19,24 @@
   letter-spacing: 0;
 }
 
-
 #linkText {
   color: #606774;
+}
+
+#movieTitleText {
+  font-family: "Pretendard";
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #17191E;
+}
+
+#releaseDateText {
+  font-family: "Pretendard";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #969DA8;
 }

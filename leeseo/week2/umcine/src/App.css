@@ -56,8 +56,6 @@ div {
 .footerGrid {
    box-sizing: border-box;
 
-  
-
     width: 100%;
     height: 57px;
     padding: 16px 80px;
@@ -75,4 +73,25 @@ div {
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
+}
+
+#movieCardGrid {
+  display: flex;
+  flex-direction: column;
+
+  width: 241.6px;
+  height: 318px;
+  gap: 4px;
+}
+
+#posterBoomarkGrid {
+  position: relative;
+  width: 241.6px;
+  height: 274px;
+}
+
+.movieCardTextGrid {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }

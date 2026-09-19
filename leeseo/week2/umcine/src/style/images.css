@@ -10,3 +10,9 @@
     width: 24px;
     height: 24px;
 }
+
+#posterImage {
+    width: 241.6px;
+    height: 274px;
+    border-radius: 10px;
+}
