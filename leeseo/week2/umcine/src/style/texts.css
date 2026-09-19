@@ -7,3 +7,19 @@
 
   color: #17191E;
 }
+
+#tmdbText {
+  height: 14px;
+  color: #606774;
+
+  font-family: "Pretendard Variable";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0;
+}
+
+
+#linkText {
+  color: #606774;
+}

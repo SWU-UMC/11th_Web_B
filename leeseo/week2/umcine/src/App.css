@@ -1,3 +1,17 @@
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+div {
+  background-color: #F6F7F9;
+}
+
 .headerGrid {
     box-sizing: border-box;
 
@@ -7,6 +21,14 @@
     width: 100%;
     height: 91px;
     padding: 24px 80px;
+
+    border: 1px solid #E3E6EB;
+    background-color: #FFFFFF;
+}
+
+.headerGrid button,
+.headerGrid div {
+    background-color: #FFFFFF;
 }
 
 #headerLeft,
@@ -20,5 +42,37 @@
 }
 
 #headerRight {
+  gap: 10px;
+}
+
+#logoGrid {
+  display: flex;
+  width: 116px;
+  height: 32px;
+  gap: 10px;
+  align-items: center;
+}
+
+.footerGrid {
+   box-sizing: border-box;
+
+  
+
+    width: 100%;
+    height: 57px;
+    padding: 16px 80px;
+
+    border: 1px solid #E3E6EB;
+    background-color: #FFFFFF;
+}
+
+.footerGrid div {
+    background-color: #FFFFFF;
+}
+
+#tmdbGrid {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   gap: 10px;
 }
