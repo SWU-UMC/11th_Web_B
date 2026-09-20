@@ -71,6 +71,6 @@
 }
 
 #bookmarkButton.selected {
-  border-color: 1px solid #17191E;
-  background-color: #FFFFFF;
+  border: none;
+  background-color: #2563EB;
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Movie } from "../types/movie";
 import { FaRegBookmark } from "react-icons/fa6";
+import { FaBookmark } from "react-icons/fa6";
 import "../App.css";
 import "../style/buttons.css"
 import "../style/texts.css"
@@ -27,7 +28,11 @@ const MovieCard = ({ movie }: MovieCardProps) => {
                         className={selected ? "selected" : ""}
                         onClick={handleBookmark}
                     >
-                        <FaRegBookmark size={14} color= {selected ? "#17191E" : "#FFFFFF"}/>
+                        {
+                            selected 
+                            ? <FaBookmark size={14} color= {"#FFFFFF"}/>
+                            : <FaRegBookmark size={14} color= {"#FFFFFF"}/>
+                        }
                     </button>    
                 </div>
                 <div id="movieTitleText" className="movieCardTextGrid">{movie.title}</div>
