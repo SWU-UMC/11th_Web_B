@@ -1,5 +1,6 @@
 import Footer from "./components/footer";
 import Header from "./components/header";
+import MovieGrid from "./components/movie-grid";
 
 
 export default function App() {
@@ -7,6 +8,7 @@ export default function App() {
       <>
         <Header/>
         <main>
+            <MovieGrid/>
         </main>
         <Footer/>
       </>
