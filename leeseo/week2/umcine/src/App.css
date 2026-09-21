@@ -110,3 +110,18 @@ div {
 
   margin: 0 auto;
 }
+
+#movieListTitleGrid {
+    width: 1280px;
+    margin: 20px auto;
+}
+
+.container {
+  box-sizing: border-box;
+
+  width: 1440px;
+  height: 1185px;
+  padding: 24px 80px;
+  gap: 20px;
+  margin: 0 auto;
+}

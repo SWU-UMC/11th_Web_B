@@ -40,3 +40,14 @@
   letter-spacing: 0;
   color: #969DA8;
 }
+
+#movieListTitleText {
+  font-family: "Pretendard";
+  font-weight: 700;
+  font-style: normal;
+  font-size: 38px;
+  line-height: 44px;
+  letter-spacing: -1.71px;
+  vertical-align: middle;
+  color: #17191E;
+}
