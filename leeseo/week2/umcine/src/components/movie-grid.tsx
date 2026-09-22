@@ -1,9 +1,14 @@
+import type { Movie } from "../types/movie";
 import MovieCard from "./movie-card";
-import { movies } from "../types/movies";
 import "../App.css";
 import "../style/texts.css"
 
-const MovieGrid = () => {
+interface MovieGridProps {
+    movies: Movie[];
+    onToggleBookmark: (id: number) => void;
+}
+
+const MovieGrid = ({ movies, onToggleBookmark }: MovieGridProps) => {
 
     return (
         <>
@@ -13,7 +18,10 @@ const MovieGrid = () => {
                 </div>
                 <div id="movieGrid">
                     {movies.map((movie) => (
-                        <MovieCard movie={movie}/>
+                        <MovieCard 
+                            movie={movie}
+                            onToggleBookmark={onToggleBookmark}
+                        />
                     ))}
                 </div>
             </div>

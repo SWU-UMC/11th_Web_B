@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { Movie } from "../types/movie";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaBookmark } from "react-icons/fa6";
@@ -9,14 +8,10 @@ import "../style/images.css"
 
 interface MovieCardProps {
     movie: Movie;
+    onToggleBookmark: (id: number) => void;
 }
 
-const MovieCard = ({ movie }: MovieCardProps) => {
-    const [selected, setSeleted] = useState(false);
-
-    const handleBookmark = () => {
-        setSeleted(!selected);
-    }
+const MovieCard = ({movie, onToggleBookmark}: MovieCardProps) => {
 
     return (
         <>
@@ -25,11 +20,11 @@ const MovieCard = ({ movie }: MovieCardProps) => {
                     <img id="posterImage" src={movie.posterPath}/>
                     <button 
                         id="bookmarkButton" 
-                        className={selected ? "selected" : ""}
-                        onClick={handleBookmark}
+                        className={movie.isBookmarked ? "selected" : ""}
+                        onClick={() => onToggleBookmark(movie.id)}
                     >
                         {
-                            selected 
+                            movie.isBookmarked
                             ? <FaBookmark size={14} color= {"#FFFFFF"}/>
                             : <FaRegBookmark size={14} color= {"#FFFFFF"}/>
                         }
