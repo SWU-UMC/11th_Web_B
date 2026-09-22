@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import Header from "./components/header";
 import MovieGrid from "./components/movie-grid";
+import Pagination from "./components/pagination";
 import { movies as initialMovies } from "./data/movie";
 import type { Movie } from "./types/movie";
 
@@ -24,6 +25,7 @@ export default function App() {
       <main className="movie-list" id="movies">
         <h1>영화 목록</h1>
         <MovieGrid movies={movies} onToggleBookmark={handleToggleBookmark} />
+        <Pagination />
       </main>
       <footer className="site-footer">
         <img className="site-footer__logo" src="/images/logos/tmdb-logo.svg" alt="TMDB" />
