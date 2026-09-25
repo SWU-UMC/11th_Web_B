@@ -1,0 +1,18 @@
+#logoImage {
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #17191E;
+    border-radius: 8px;
+}
+
+#tmdbImage {
+    width: 24px;
+    height: 24px;
+}
+
+#posterImage {
+    width: 241.6px;
+    height: 274px;
+    border-radius: 10px;
+}

@@ -1,0 +1,53 @@
+#logoText {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: -0.7px;
+
+  color: #17191E;
+}
+
+#tmdbText {
+  height: 14px;
+  color: #606774;
+
+  font-family: "Pretendard Variable";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0;
+}
+
+#linkText {
+  color: #606774;
+}
+
+#movieTitleText {
+  font-family: "Pretendard";
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #17191E;
+}
+
+#releaseDateText {
+  font-family: "Pretendard";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #969DA8;
+}
+
+#movieListTitleText {
+  font-family: "Pretendard";
+  font-weight: 700;
+  font-style: normal;
+  font-size: 38px;
+  line-height: 44px;
+  letter-spacing: -1.71px;
+  vertical-align: middle;
+  color: #17191E;
+}
