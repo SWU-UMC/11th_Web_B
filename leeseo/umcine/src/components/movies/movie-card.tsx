@@ -5,6 +5,7 @@ import "../../App.css";
 import "../../style/buttons.css"
 import "../../style/texts.css"
 import "../../style/images.css"
+import { Link } from "@tanstack/react-router";
 
 interface MovieCardProps {
     movie: Movie;
@@ -17,7 +18,9 @@ const MovieCard = ({movie, onToggleBookmark}: MovieCardProps) => {
         <>
             <div id="movieCardGrid">
                 <div id="posterBoomarkGrid">
-                    <img id="posterImage" src={movie.posterPath}/>
+                    <Link to="/movies/$movieId" params={{ movieId: String(movie.id) }}>
+                        <img id="posterImage" src={movie.posterPath}/>
+                    </Link>
                     <button 
                         id="bookmarkButton" 
                         className={movie.isBookmarked ? "selected" : ""}

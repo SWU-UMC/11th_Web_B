@@ -4,6 +4,7 @@ import "../../style/texts.css"
 import "../../style/images.css"
 import movie from "../../../public/icons/movie.svg"
 import { IoMdSearch } from "react-icons/io";
+import { Link } from "@tanstack/react-router";
 
 const Header = () => {
     return (
@@ -14,8 +15,8 @@ const Header = () => {
                         <img id="logoImage" src={movie}/>
                         <div id="logoText">UMCine</div>
                     </div>
-                    <button className="textButton">영화</button>
-                    <button className="textButton">검색</button>
+                    <Link to="/" className="textButton">영화</Link>
+                    <Link to="/search" className="textButton">검색</Link>
                     <button className="textButton">내 정보</button>
                 </div>
                 <div id="headerRight">
