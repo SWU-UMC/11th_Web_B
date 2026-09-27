@@ -75,3 +75,24 @@
   border: none;
   background-color: #2563EB;
 }
+
+#searchButton {
+  width: fit-content;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid var(--color-text-primary, #17191E);
+  background: var(--color-text-primary, #17191E);
+  opacity: 1;
+  box-sizing: border-box;
+  
+  font-family: "Font 5", sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+  vertical-align: middle;
+  color: #FFFFFF;
+
+  white-space: nowrap;
+}

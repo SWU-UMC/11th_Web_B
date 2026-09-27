@@ -2,7 +2,6 @@ import "../../App.css";
 import "../../style/buttons.css"
 import "../../style/texts.css"
 import "../../style/images.css"
-import movie from "../../../public/icons/movie.svg"
 import { IoMdSearch } from "react-icons/io";
 import { Link } from "@tanstack/react-router";
 
@@ -12,7 +11,7 @@ const Header = () => {
             <div className="headerGrid">
                 <div id="headerLeft">
                     <div id="logoGrid">
-                        <img id="logoImage" src={movie}/>
+                        <img id="logoImage" src="/icons/movie.svg" />
                         <div id="logoText">UMCine</div>
                     </div>
                     <Link to="/" className="textButton">영화</Link>
