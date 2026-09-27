@@ -1,8 +1,8 @@
-import "../App.css";
-import "../style/buttons.css"
-import "../style/texts.css"
-import "../style/images.css"
-import movie from "../../public/icons/movie.svg"
+import "../../App.css";
+import "../../style/buttons.css"
+import "../../style/texts.css"
+import "../../style/images.css"
+import movie from "../../../public/icons/movie.svg"
 import { IoMdSearch } from "react-icons/io";
 
 const Header = () => {

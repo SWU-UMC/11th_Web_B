@@ -1,7 +1,7 @@
-import "../App.css";
-import "../style/texts.css"
-import "../style/images.css"
-import tmdbLogo from "../../public/images/logos/tmdb-logo.svg";
+import "../../App.css";
+import "../../style/texts.css"
+import "../../style/images.css"
+import tmdbLogo from "../../../public/images/logos/tmdb-logo.svg";
 
 const Footer = () => {
     return (

@@ -1,10 +1,10 @@
-import type { Movie } from "../types/movie";
+import type { Movie } from "../../types/movie";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaBookmark } from "react-icons/fa6";
-import "../App.css";
-import "../style/buttons.css"
-import "../style/texts.css"
-import "../style/images.css"
+import "../../App.css";
+import "../../style/buttons.css"
+import "../../style/texts.css"
+import "../../style/images.css"
 
 interface MovieCardProps {
     movie: Movie;
