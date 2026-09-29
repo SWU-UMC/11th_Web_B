@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useParams } from "@tanstack/react-router";
-import { useMovies } from "../../contexts/movie-provider";
+import { useMovies } from "../../contexts/use-movies";
 import "../../style/images.css";
 import "../../style/texts.css";
 import "../../App.css";
