@@ -16,3 +16,14 @@
     height: 274px;
     border-radius: 10px;
 }
+
+#detailBackdrop {
+    width: 100%;
+    height: 360px;
+}
+
+#detailPoster {
+    width: 200px;
+    height: 286px;
+   border-radius: 10px;
+}

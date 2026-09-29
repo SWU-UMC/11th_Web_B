@@ -562,3 +562,88 @@ div {
   color: #6B7280;
   text-align: center;
 }
+
+#backdropGrid {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px 48px;
+  box-sizing: border-box;
+}
+
+/* 배경 이미지 및 어두운 그라데이션 오버레이 */
+#detailBackdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* 상단 뒤로가기 버튼 */
+#movieBack {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 15px;
+  width: fit-content;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+  font-weight: 700;
+}
+
+#movieBack:hover {
+  opacity: 1;
+}
+
+/* 하단 정보 영역 */
+.backdrop-info {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+}
+
+.backdrop-info h1 {
+  font-size: 46px;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+}
+
+.backdrop-info .original-title {
+  font-size: 14px;
+  color: #ffffff;
+  margin: 2px 0 6px 0;
+}
+
+.meta-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  background: none;
+}
+
+.meta-info span {
+    color: #ffffff;
+}
+
+.backdrop-info h2 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  margin-top: 10px;
+}
