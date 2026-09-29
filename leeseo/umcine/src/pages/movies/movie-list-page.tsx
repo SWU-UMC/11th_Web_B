@@ -1,20 +1,9 @@
-import { useState } from "react";
-import { movies } from "../../data/movies";
 import MovieGrid from "../../components/movies/movie-grid";
+import { useMovies } from "../../contexts/use-movies";
 
 const MovieListPage = () => {
 
-    const [movieList, setMovieList] = useState(movies);
-
-    const handleToggleBookmark = (id: number) => {
-        setMovieList((prevMovies) =>
-            prevMovies.map((movie) =>
-                movie.id === id
-                    ? { ...movie, isBookmarked: !movie.isBookmarked }
-                    : movie
-            )
-        );
-    };
+    const { movieList, handleToggleBookmark } = useMovies();
 
     return (
         <>
