@@ -1,4 +1,4 @@
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type SubmitEvent } from "react";
 import { movies } from "../../data/movies";
 
@@ -101,6 +101,14 @@ export function SearchPage() {
                     <span>{movie.releaseDate}</span>
                   </div>
                   <p>{movie.overview}</p>
+                  <Link
+                    className="search-result-card__detail-link"
+                    to="/movies/$movieId"
+                    params={{ movieId: String(movie.id) }}
+                  >
+                    상세 보기
+                    <img src="/icons/arrow-right.svg" alt="" />
+                  </Link>
                 </div>
               </article>
             ))}
