@@ -1,6 +1,7 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type SubmitEvent } from "react";
 import { movies } from "../../data/movies";
+import { cn } from "../../utils/cn";
 
 export function SearchPage() {
   const { query } = useSearch({ from: "/search" });
@@ -52,9 +53,11 @@ export function SearchPage() {
 
   if (!displayQuery) {
     return (
-      <main className="search-empty-page">
-        <div className="search-empty-page__inner">
-          <h1>어떤 영화를 찾고 있나요?</h1>
+      <main className="flex h-[582px] w-full justify-center px-[72px] pt-[209px] pb-[210px] max-[683px]:h-auto max-[683px]:min-h-[500px] max-[683px]:px-6 max-[683px]:py-[140px] max-[463px]:min-h-[430px] max-[463px]:px-4 max-[463px]:py-[100px]">
+        <div className="flex w-[790px] flex-[0_0_790px] flex-col items-center gap-9 max-[683px]:w-full max-[683px]:max-w-[790px] max-[683px]:basis-auto max-[463px]:gap-7">
+          <h1 className="m-0 whitespace-nowrap text-[46px] leading-[52.44px] font-bold tracking-[-2.3px] text-[#17191e] max-[683px]:text-[34px] max-[683px]:leading-10 max-[683px]:tracking-[-1.2px] max-[463px]:whitespace-normal max-[463px]:text-center max-[463px]:text-[28px] max-[463px]:leading-9 max-[463px]:tracking-[-0.8px]">
+            어떤 영화를 찾고 있나요?
+          </h1>
           <SearchForm
             value={searchInput}
             onChange={setSearchInput}
@@ -68,9 +71,11 @@ export function SearchPage() {
 
   return (
     <>
-      <main className="search-results-page">
-        <div className="search-results-head">
-          <h1>영화 검색</h1>
+      <main className="w-full flex-[1_0_auto] px-20 py-6 max-[1199px]:px-10 max-[683px]:px-6 max-[683px]:pt-5 max-[683px]:pb-8 max-[463px]:px-4">
+        <div className="flex w-full flex-col gap-[17px]">
+          <h1 className="m-0 text-[38px] leading-11 font-bold tracking-[-1.71px] text-[#17191e] max-[683px]:text-[34px] max-[683px]:leading-10 max-[683px]:tracking-[-1.2px]">
+            영화 검색
+          </h1>
           <SearchForm
             value={searchInput}
             onChange={setSearchInput}
@@ -80,49 +85,67 @@ export function SearchPage() {
           />
         </div>
 
-        <div className="search-results-toolbar">
-          <h2>‘{displayQuery}’ 검색 결과</h2>
-          <span>영화 {searchResults.length}편 · 1페이지</span>
+        <div className="flex h-[54px] w-full items-center justify-between border-y border-[#e3e6eb]">
+          <h2 className="m-0 min-w-0 text-lg leading-[21px] font-bold text-[#17191e] max-[463px]:overflow-hidden max-[463px]:text-ellipsis max-[463px]:whitespace-nowrap">
+            ‘{displayQuery}’ 검색 결과
+          </h2>
+          <span className="text-xs leading-[14px] font-normal text-[#969da8] max-[463px]:hidden">
+            영화 {searchResults.length}편 · 1페이지
+          </span>
         </div>
 
         {searchResults.length > 0 ? (
-          <div className="search-results-list">
+          <div className="grid grid-cols-2 gap-x-10 max-[1199px]:grid-cols-1">
             {searchResults.map((movie) => (
-              <article className="search-result-card" key={movie.id}>
+              <article
+                className="flex h-60 w-full items-start gap-[18px] border-b border-[#e3e6eb] py-5 max-[463px]:h-auto max-[463px]:min-h-[190px] max-[463px]:gap-3.5"
+                key={movie.id}
+              >
                 <img
-                  className="search-result-card__poster"
+                  className="block h-[190px] w-[126px] flex-[0_0_126px] overflow-hidden rounded-[10px] bg-[#f6f7f9] object-cover max-[463px]:h-[151px] max-[463px]:w-[100px] max-[463px]:basis-[100px]"
                   src={movie.posterPath}
                   alt={`${movie.title} 포스터`}
                 />
-                <div className="search-result-card__content">
-                  <h3>{movie.title}</h3>
-                  <div className="search-result-card__meta">
+                <div className="flex h-full min-w-0 flex-1 flex-col items-start gap-2 pt-1">
+                  <h3 className="m-0 w-full text-lg leading-[24.3px] font-bold text-[#17191e]">
+                    {movie.title}
+                  </h3>
+                  <div className="flex w-full items-center gap-2 text-xs leading-[14px] font-normal text-[#969da8] max-[463px]:flex-wrap">
                     <span>{movie.originalTitle}</span>
                     <span>{movie.releaseDate}</span>
                   </div>
-                  <p>{movie.overview}</p>
+                  <p className="m-0 line-clamp-3 w-full text-[12.5px] leading-[20.25px] font-normal text-[#606774]">
+                    {movie.overview}
+                  </p>
                   <Link
-                    className="search-result-card__detail-link"
+                    className="mt-auto flex items-center gap-1 text-xs leading-[14px] font-extrabold text-[#2563eb] no-underline"
                     to="/movies/$movieId"
                     params={{ movieId: String(movie.id) }}
                   >
                     상세 보기
-                    <img src="/icons/arrow-right.svg" alt="" />
+                    <img className="block size-4" src="/icons/arrow-right.svg" alt="" />
                   </Link>
                 </div>
               </article>
             ))}
           </div>
         ) : (
-          <p className="search-results-empty">검색 결과가 없어요.</p>
+          <p className="m-0 border-b border-[#e3e6eb] px-0 py-20 text-center text-lg leading-6 font-bold text-[#606774]">
+            검색 결과가 없어요.
+          </p>
         )}
       </main>
 
-      <footer className="site-footer">
-        <img className="site-footer__logo" src="/images/logos/tmdb-logo.svg" alt="TMDB" />
-        <p>
+      <footer className="flex h-[57px] w-full flex-[0_0_auto] items-center justify-end gap-2 border-t border-[#e3e6eb] bg-white px-20 py-4 text-xs leading-[14px] font-normal text-[#606774] max-[1199px]:h-auto max-[1199px]:min-h-[57px] max-[1199px]:px-10 max-[683px]:px-6 max-[463px]:items-start max-[463px]:px-4 max-[463px]:py-3.5">
+        <img className="block size-6" src="/images/logos/tmdb-logo.svg" alt="TMDB" />
+        <p className="m-0 whitespace-nowrap max-[463px]:whitespace-normal">
           This product uses the TMDB API but is not endorsed or certified by{" "}
-          <a href="https://www.themoviedb.org/?language=ko" target="_blank" rel="noreferrer">
+          <a
+            className="text-inherit underline [text-underline-position:from-font]"
+            href="https://www.themoviedb.org/?language=ko"
+            target="_blank"
+            rel="noreferrer"
+          >
             TMDB
           </a>
           .
@@ -144,9 +167,23 @@ function SearchForm({ value, variant, onChange, onSubmit, onClear }: SearchFormP
   const isResultsForm = variant === "results";
 
   return (
-    <form className={`movie-search-form movie-search-form--${variant}`} onSubmit={onSubmit}>
-      <img className="movie-search-form__icon" src="/icons/search.svg" alt="" />
+    <form
+      className={cn(
+        "flex w-full items-center bg-white",
+        isResultsForm
+          ? "h-[54px] gap-[18px] rounded-[9px] border border-[#e3e6eb] pr-[10px] pl-[15px] max-[463px]:gap-[10px] max-[463px]:pl-3"
+          : "h-[74px] gap-[14px] rounded-xl border-2 border-[#17191e] pr-[17px] pl-[21px] shadow-[0_12px_17px_rgba(17,19,24,0.08)] max-[463px]:h-16 max-[463px]:gap-[10px] max-[463px]:pr-[10px] max-[463px]:pl-[14px]",
+      )}
+      onSubmit={onSubmit}
+    >
+      <img className="block size-6 flex-[0_0_24px]" src="/icons/search.svg" alt="" />
       <input
+        className={cn(
+          "h-full min-w-0 flex-1 border-0 bg-transparent px-0.5 font-[inherit] text-[#17191e] outline-none placeholder:text-[#969da8] placeholder:opacity-100",
+          isResultsForm
+            ? "text-sm leading-[17px] font-bold"
+            : "text-[17px] leading-5 font-normal max-[463px]:text-[15px]",
+        )}
         aria-label="영화 제목"
         autoFocus={!isResultsForm}
         placeholder="예: 스파이더맨"
@@ -155,15 +192,18 @@ function SearchForm({ value, variant, onChange, onSubmit, onClear }: SearchFormP
       />
       {isResultsForm && value && onClear ? (
         <button
-          className="movie-search-form__clear"
+          className="block size-6 flex-[0_0_24px] cursor-pointer bg-transparent p-0"
           type="button"
           aria-label="검색어 지우기"
           onClick={onClear}
         >
-          <img src="/icons/close.svg" alt="" />
+          <img className="block size-6" src="/icons/close.svg" alt="" />
         </button>
       ) : null}
-      <button className="movie-search-form__submit" type="submit">
+      <button
+        className="h-[42px] flex-none cursor-pointer whitespace-nowrap rounded-lg border! border-solid! border-[#17191e]! bg-[#17191e] px-4 text-sm leading-[17px] font-extrabold text-white"
+        type="submit"
+      >
         {isResultsForm ? "다시 검색" : "검색"}
       </button>
     </form>

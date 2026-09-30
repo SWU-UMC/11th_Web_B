@@ -29,11 +29,16 @@ export function MovieListPage() {
         <MovieGrid movies={movies} onToggleBookmark={handleToggleBookmark} />
         <Pagination />
       </main>
-      <footer className="site-footer">
-        <img className="site-footer__logo" src="/images/logos/tmdb-logo.svg" alt="TMDB" />
-        <p>
+      <footer className="flex h-[57px] w-full flex-[0_0_auto] items-center justify-end gap-2 border-t border-[#e3e6eb] bg-white px-20 py-4 text-xs leading-[14px] font-normal text-[#606774] max-[1199px]:h-auto max-[1199px]:min-h-[57px] max-[1199px]:px-10 max-[683px]:px-6 max-[463px]:items-start max-[463px]:px-4 max-[463px]:py-3.5">
+        <img className="block size-6" src="/images/logos/tmdb-logo.svg" alt="TMDB" />
+        <p className="m-0 whitespace-nowrap max-[463px]:whitespace-normal">
           This product uses the TMDB API but is not endorsed or certified by{" "}
-          <a href="https://www.themoviedb.org/?language=ko" target="_blank" rel="noreferrer">
+          <a
+            className="text-inherit underline [text-underline-position:from-font]"
+            href="https://www.themoviedb.org/?language=ko"
+            target="_blank"
+            rel="noreferrer"
+          >
             TMDB
           </a>
           .
