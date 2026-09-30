@@ -53,9 +53,9 @@ export function SearchPage() {
 
   if (!displayQuery) {
     return (
-      <main className="flex h-[582px] w-full justify-center px-[72px] pt-[209px] pb-[210px] max-[683px]:h-auto max-[683px]:min-h-[500px] max-[683px]:px-6 max-[683px]:py-[140px] max-[463px]:min-h-[430px] max-[463px]:px-4 max-[463px]:py-[100px]">
-        <div className="flex w-[790px] flex-[0_0_790px] flex-col items-center gap-9 max-[683px]:w-full max-[683px]:max-w-[790px] max-[683px]:basis-auto max-[463px]:gap-7">
-          <h1 className="m-0 whitespace-nowrap text-[46px] leading-[52.44px] font-bold tracking-[-2.3px] text-[#17191e] max-[683px]:text-[34px] max-[683px]:leading-10 max-[683px]:tracking-[-1.2px] max-[463px]:whitespace-normal max-[463px]:text-center max-[463px]:text-[28px] max-[463px]:leading-9 max-[463px]:tracking-[-0.8px]">
+      <main className="flex min-h-[calc(100vh-91px)] w-full flex-1 items-center justify-center px-[clamp(16px,5vw,72px)] py-[clamp(80px,12vw,140px)] max-[683px]:min-h-[calc(100vh-75px)]">
+        <div className="flex w-full max-w-[720px] -translate-y-20 flex-col items-center gap-7 max-[683px]:-translate-y-6 max-[463px]:-translate-y-4 max-[463px]:gap-6">
+          <h1 className="m-0 whitespace-nowrap text-[40px] leading-[48px] font-bold tracking-[-2px] text-[#17191e] max-[683px]:text-[32px] max-[683px]:leading-[38px] max-[683px]:tracking-[-1.1px] max-[463px]:whitespace-normal max-[463px]:text-center max-[463px]:text-[27px] max-[463px]:leading-[34px] max-[463px]:tracking-[-0.8px]">
             어떤 영화를 찾고 있나요?
           </h1>
           <SearchForm
@@ -172,7 +172,7 @@ function SearchForm({ value, variant, onChange, onSubmit, onClear }: SearchFormP
         "flex w-full items-center bg-white",
         isResultsForm
           ? "h-[54px] gap-[18px] rounded-[9px] border border-[#e3e6eb] pr-[10px] pl-[15px] max-[463px]:gap-[10px] max-[463px]:pl-3"
-          : "h-[74px] gap-[14px] rounded-xl border-2 border-[#17191e] pr-[17px] pl-[21px] shadow-[0_12px_17px_rgba(17,19,24,0.08)] max-[463px]:h-16 max-[463px]:gap-[10px] max-[463px]:pr-[10px] max-[463px]:pl-[14px]",
+          : "h-16 gap-[14px] rounded-xl border-2 border-[#17191e] pr-[17px] pl-[21px] shadow-[0_12px_17px_rgba(17,19,24,0.08)] max-[463px]:h-[58px] max-[463px]:gap-[10px] max-[463px]:pr-[10px] max-[463px]:pl-[14px]",
       )}
       onSubmit={onSubmit}
     >
