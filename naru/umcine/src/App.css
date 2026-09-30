@@ -51,8 +51,7 @@
 }
 
 .brand__mark img,
-.search-button img,
-.bookmark-button img {
+.search-button img {
   display: block;
   width: 24px;
   height: 24px;
@@ -141,97 +140,6 @@
   column-gap: 18px;
   row-gap: 20px;
   align-content: start;
-}
-
-.movie-card {
-  display: flex;
-  width: 100%;
-  height: 318px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-}
-
-.movie-card__poster {
-  position: relative;
-  width: 100%;
-  height: 274px;
-  flex: 0 0 274px;
-  overflow: hidden;
-  background: var(--color-bg-page);
-  border-radius: 10px;
-}
-
-.movie-card__poster-link,
-.movie-card__poster-link > img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.movie-card__poster-link > img {
-  object-fit: cover;
-  object-position: center;
-}
-
-.bookmark-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: grid;
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  place-items: center;
-  cursor: pointer;
-  background: var(--color-text-primary);
-  border: 1px solid var(--color-bg-surface);
-  border-radius: 8px;
-}
-
-.bookmark-button--active {
-  background: var(--color-action-primary);
-  border-color: var(--color-action-primary);
-}
-
-.bookmark-button img { filter: invert(1); }
-
-.movie-card__title {
-  width: 100%;
-  height: 22px;
-  flex: 0 0 22px;
-  overflow: hidden;
-  padding-top: 5px;
-}
-
-.movie-card__title h2 {
-  margin: 0;
-  overflow: hidden;
-  color: var(--color-text-primary);
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 17px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.movie-card__title a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.movie-card__meta {
-  width: 100%;
-  height: 14px;
-  flex: 0 0 14px;
-}
-
-.movie-card__meta p {
-  margin: 0;
-  color: var(--color-text-tertiary);
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 14px;
 }
 
 .pagination {
@@ -875,16 +783,6 @@
     grid-auto-rows: auto;
     row-gap: 24px;
     justify-content: center;
-  }
-
-  .movie-card {
-    height: auto;
-  }
-
-  .movie-card__poster {
-    height: auto;
-    aspect-ratio: 121 / 137;
-    flex-basis: auto;
   }
 
   .site-footer {
