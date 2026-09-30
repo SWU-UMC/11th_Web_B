@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "../../utils/cn";
 
 const navigationLinkClass =
-  "text-center text-[14px] leading-[17px] font-bold no-underline";
+  "text-center text-[14px]! leading-[17px]! font-bold! no-underline";
 
 export default function Header() {
   const pathname = useRouterState({
