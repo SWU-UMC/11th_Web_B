@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Header from "../../components/layout/header";
 import MovieGrid from "../../components/movies/movie-grid";
 import Pagination from "../../components/movies/pagination";
 import { movies as initialMovies } from "../../data/movies";
@@ -19,8 +18,7 @@ export function MovieListPage() {
   }
 
   return (
-    <div className="app-shell">
-      <Header />
+    <>
       <main className="movie-list" id="movies">
         <h1>영화 목록</h1>
         <MovieGrid movies={movies} onToggleBookmark={handleToggleBookmark} />
@@ -36,6 +34,6 @@ export function MovieListPage() {
           .
         </p>
       </footer>
-    </div>
+    </>
   );
 }
