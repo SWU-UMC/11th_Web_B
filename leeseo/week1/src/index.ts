@@ -15,7 +15,7 @@ const findMember = (id: number) => {
     if (member == null) {
       return "존재하지 않는 회원입니다.";
     }
-    return "회원" + id + "의 이름은 " + member?.name + "이고, 역할은 " + member.role + "이고, github id는 " + (member?.githubId || "존재하지 않는") + "다.";
+    return "회원" + id + "의 이름은 " + member.name + "이고, 역할은 " + member.role + "이고, github id는 " + (member?.githubId || "존재하지 않는") + "다.";
 }
 
 console.log(findMember(1));
