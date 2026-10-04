@@ -2,18 +2,15 @@ import { useState } from "react";
 import { Link, useParams } from "@tanstack/react-router";
 import { useMovies } from "../../contexts/use-movies";
 import { IoIosArrowBack } from "react-icons/io";
-import {
-  FaRegBookmark,
-  FaBookmark,
-  FaStar,
-} from "react-icons/fa6";
+import { FaStar } from "react-icons/fa6";
+import { BookmarkButton } from "../../components/bookmark-button";
 
 const MovieDetailPage = () => {
   const { movieId } = useParams({
     from: "/movies/$movieId",
   });
 
-  const { movieList, handleToggleBookmark } = useMovies();
+  const { movieList} = useMovies();
 
   const movie = movieList.find(
     (item) => item.id === Number(movieId)
@@ -110,30 +107,11 @@ const MovieDetailPage = () => {
           </p>
 
           {/* 즐겨찾기 버튼 */}
-          <button
-            className={`mt-3 inline-flex h-9 w-fit min-w-[100px] shrink-0 items-center justify-center gap-2 rounded-[5px] border-0 px-[14px] py-2 text-[13px] font-semibold text-white cursor-pointer ${
-              movie.isBookmarked
-                ? "bg-[#2563eb]"
-                : "bg-[#2563eb]"
-            }`}
-            onClick={() =>
-              handleToggleBookmark(movie.id)
-            }
-          >
-            {movie.isBookmarked ? (
-              <FaBookmark
-                size={14}
-                color="#FFFFFF"
-              />
-            ) : (
-              <FaRegBookmark
-                size={14}
-                color="#FFFFFF"
-              />
-            )}
-
-            즐겨찾기
-          </button>
+          <BookmarkButton 
+            movieId={movie.id}
+            hasText={true}
+            className="mt-3 inline-flex h-9 w-fit min-w-[100px] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-[5px] border-0 bg-[#2563eb] px-[14px] py-2 text-[13px] font-semibold text-white"
+          />
         </div>
 
         {/* 오른쪽: 평점 및 한 줄 평 */}

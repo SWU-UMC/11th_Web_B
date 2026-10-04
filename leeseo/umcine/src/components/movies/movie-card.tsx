@@ -1,15 +1,13 @@
 import type { Movie } from "../../types/movie";
-import { FaRegBookmark, FaBookmark } from "react-icons/fa6";
 import { Link } from "@tanstack/react-router";
+import { BookmarkButton } from "../bookmark-button";
 
 interface MovieCardProps {
   movie: Movie;
-  onToggleBookmark: (id: number) => void;
 }
 
 const MovieCard = ({
-  movie,
-  onToggleBookmark,
+  movie
 }: MovieCardProps) => {
   return (
     <div className="flex h-[318px] w-[241.6px] flex-col gap-1">
@@ -27,25 +25,10 @@ const MovieCard = ({
         </Link>
 
         {/* 즐겨찾기 버튼 */}
-        <button
-          className={`absolute right-2 top-2 flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-white ${
-            movie.isBookmarked
-              ? "border-0 bg-[#2563EB]"
-              : "bg-[#17191E]"
-          }`}
-          onClick={() => onToggleBookmark(movie.id)}
-          aria-label={
-            movie.isBookmarked
-              ? "즐겨찾기 해제"
-              : "즐겨찾기 추가"
-          }
-        >
-          {movie.isBookmarked ? (
-            <FaBookmark size={14} color="#FFFFFF" />
-          ) : (
-            <FaRegBookmark size={14} color="#FFFFFF" />
-          )}
-        </button>
+        <BookmarkButton 
+          movieId={movie.id}
+          hasText={false}
+        />
       </div>
 
       {/* 영화 제목 */}

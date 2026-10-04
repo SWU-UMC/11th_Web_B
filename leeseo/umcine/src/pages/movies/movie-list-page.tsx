@@ -3,13 +3,13 @@ import { useMovies } from "../../contexts/use-movies";
 
 const MovieListPage = () => {
 
-    const { movieList, handleToggleBookmark } = useMovies();
+    const { movieList } = useMovies();
+    
 
     return (
         <>
             <MovieGrid 
               movies={movieList}
-              onToggleBookmark={handleToggleBookmark}
             />
         </>
     )
