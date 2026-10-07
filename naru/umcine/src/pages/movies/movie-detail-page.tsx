@@ -104,7 +104,7 @@ export function MovieDetailPage() {
               readOnly
             />
             <button
-              className="h-[42px] w-full rounded-lg border! border-solid! border-white! bg-[#17191e] px-4 text-sm leading-[17px] font-extrabold text-white opacity-100"
+              className="inline-flex h-[42px] w-full items-center justify-center rounded-lg border! border-solid! border-white! bg-[#17191e] px-4 text-sm leading-[17px] font-extrabold text-white opacity-100"
               type="button"
               disabled
             >
