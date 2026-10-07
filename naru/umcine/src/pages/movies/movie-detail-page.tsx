@@ -66,6 +66,17 @@ export function MovieDetailPage() {
               {movie.tagline}
             </h2>
             <p className="m-0 text-sm leading-6 font-normal text-[#606774]">{movie.overview}</p>
+            <button
+              className="inline-flex h-[42px] w-fit cursor-pointer items-center justify-center gap-2 rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 text-[14px]! leading-[17px]! font-extrabold! whitespace-nowrap text-white"
+              type="button"
+            >
+              <img
+                className="block size-4 invert"
+                src="/icons/bookmark-outline.svg"
+                alt=""
+              />
+              즐겨찾기
+            </button>
           </div>
 
           <aside className="flex w-[360px] flex-[0_0_360px] flex-col items-start gap-2 border-l border-[#e3e6eb] pt-0 pr-0 pb-[41px] pl-[30px] max-[1199px]:w-full max-[1199px]:basis-full max-[1199px]:border-t max-[1199px]:border-l-0 max-[1199px]:px-0 max-[1199px]:pt-6 max-[1199px]:pb-0">
