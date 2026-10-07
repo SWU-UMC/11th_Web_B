@@ -1,19 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MovieGrid from "../../components/movies/movie-grid";
 import Pagination from "../../components/movies/pagination";
 import { movies as initialMovies } from "../../data/movies";
-import type { Movie } from "../../types/movie";
+import { readBookmarkIds, saveBookmarkIds } from "../../utils/bookmark-storage";
 
 export function MovieListPage() {
-  const [movies, setMovies] = useState<Movie[]>(initialMovies);
+  const [bookmarkIds, setBookmarkIds] = useState<number[]>(() => readBookmarkIds());
+  const movies = initialMovies.map((movie) => ({
+    ...movie,
+    isBookmarked: bookmarkIds.includes(movie.id),
+  }));
+
+  useEffect(() => {
+    saveBookmarkIds(bookmarkIds);
+  }, [bookmarkIds]);
 
   function handleToggleBookmark(movieId: number) {
-    setMovies((currentMovies) =>
-      currentMovies.map((movie) =>
-        movie.id === movieId
-          ? { ...movie, isBookmarked: !movie.isBookmarked }
-          : movie,
-      ),
+    setBookmarkIds((currentBookmarkIds) =>
+      currentBookmarkIds.includes(movieId)
+        ? currentBookmarkIds.filter((currentMovieId) => currentMovieId !== movieId)
+        : [...currentBookmarkIds, movieId],
     );
   }
 
