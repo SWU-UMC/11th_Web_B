@@ -3,12 +3,10 @@ import MovieCard from "./movie-card";
 
 interface MovieGridProps {
   movies: Movie[];
-  onToggleBookmark: (id: number) => void;
 }
 
 const MovieGrid = ({
   movies,
-  onToggleBookmark,
 }: MovieGridProps) => {
   return (
     <div className="mx-auto box-border w-full max-w-[1440px] px-20 py-6 max-md:px-10 max-[480px]:px-5">
@@ -25,7 +23,6 @@ const MovieGrid = ({
           <MovieCard
             key={movie.id}
             movie={movie}
-            onToggleBookmark={onToggleBookmark}
           />
         ))}
       </div>
