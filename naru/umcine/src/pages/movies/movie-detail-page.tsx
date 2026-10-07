@@ -1,9 +1,13 @@
 import { Link, useParams } from "@tanstack/react-router";
 import { movies } from "../../data/movies";
+import { useBookmarkStore } from "../../stores/bookmark-store";
 
 export function MovieDetailPage() {
   const { movieId } = useParams({ from: "/movies/$movieId" });
   const movie = movies.find(({ id }) => id === Number(movieId));
+  const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
+  const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
+  const isBookmarked = movie ? bookmarkedMovieIds.includes(movie.id) : false;
 
   if (!movie) {
     return (
@@ -69,10 +73,13 @@ export function MovieDetailPage() {
             <button
               className="inline-flex h-[42px] w-fit cursor-pointer items-center justify-center gap-2 rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 text-[14px]! leading-[17px]! font-extrabold! whitespace-nowrap text-white"
               type="button"
+              aria-label={`${movie.title} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`}
+              aria-pressed={isBookmarked}
+              onClick={() => toggleBookmark(movie.id)}
             >
               <img
                 className="block size-4 invert"
-                src="/icons/bookmark-outline.svg"
+                src={isBookmarked ? "/icons/bookmark.svg" : "/icons/bookmark-outline.svg"}
                 alt=""
               />
               즐겨찾기

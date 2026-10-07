@@ -1,12 +1,15 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type SubmitEvent } from "react";
 import { movies } from "../../data/movies";
+import { useBookmarkStore } from "../../stores/bookmark-store";
 import { cn } from "../../utils/cn";
 
 export function SearchPage() {
   const { query } = useSearch({ from: "/search" });
   const navigate = useNavigate({ from: "/search" });
   const [searchInput, setSearchInput] = useState(query ?? "");
+  const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
+  const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
 
   useEffect(() => {
     let isCurrent = true;
@@ -96,38 +99,66 @@ export function SearchPage() {
 
         {searchResults.length > 0 ? (
           <div className="grid grid-cols-2 gap-x-10 max-[1199px]:grid-cols-1">
-            {searchResults.map((movie) => (
-              <article
-                className="flex h-60 w-full items-start gap-[18px] border-b border-[#e3e6eb] py-5 max-[463px]:h-auto max-[463px]:min-h-[190px] max-[463px]:gap-3.5"
-                key={movie.id}
-              >
-                <img
-                  className="block h-[190px] w-[126px] flex-[0_0_126px] overflow-hidden rounded-[10px] bg-[#f6f7f9] object-cover max-[463px]:h-[151px] max-[463px]:w-[100px] max-[463px]:basis-[100px]"
-                  src={movie.posterPath}
-                  alt={`${movie.title} 포스터`}
-                />
-                <div className="flex h-full min-w-0 flex-1 flex-col items-start gap-2 pt-1">
-                  <h3 className="m-0 w-full text-lg leading-[24.3px] font-bold text-[#17191e]">
-                    {movie.title}
-                  </h3>
-                  <div className="flex w-full items-center gap-2 text-xs leading-[14px] font-normal text-[#969da8] max-[463px]:flex-wrap">
-                    <span>{movie.originalTitle}</span>
-                    <span>{movie.releaseDate}</span>
+            {searchResults.map((movie) => {
+              const isBookmarked = bookmarkedMovieIds.includes(movie.id);
+
+              return (
+                <article
+                  className="flex h-60 w-full items-start gap-[18px] border-b border-[#e3e6eb] py-5 max-[463px]:h-auto max-[463px]:min-h-[190px] max-[463px]:gap-3.5"
+                  key={movie.id}
+                >
+                  <div className="relative h-[190px] w-[126px] flex-[0_0_126px] overflow-hidden rounded-[10px] bg-[#f6f7f9] max-[463px]:h-[151px] max-[463px]:w-[100px] max-[463px]:basis-[100px]">
+                    <img
+                      className="block size-full object-cover"
+                      src={movie.posterPath}
+                      alt={`${movie.title} 포스터`}
+                    />
+                    <button
+                      className={cn(
+                        "absolute top-2.5 right-2.5 grid size-[34px] cursor-pointer place-items-center rounded-lg border! border-solid! p-0",
+                        isBookmarked
+                          ? "border-[#2563eb]! bg-[#2563eb]"
+                          : "border-white! bg-[#17191e]",
+                      )}
+                      type="button"
+                      aria-label={`${movie.title} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`}
+                      aria-pressed={isBookmarked}
+                      onClick={() => toggleBookmark(movie.id)}
+                    >
+                      <img
+                        className="block size-6 invert"
+                        src={
+                          isBookmarked
+                            ? "/icons/bookmark.svg"
+                            : "/icons/bookmark-outline.svg"
+                        }
+                        alt=""
+                      />
+                    </button>
                   </div>
-                  <p className="m-0 line-clamp-3 w-full text-[12.5px] leading-[20.25px] font-normal text-[#606774]">
-                    {movie.overview}
-                  </p>
-                  <Link
-                    className="mt-auto flex items-center gap-1 text-xs leading-[14px] font-extrabold text-[#2563eb] no-underline"
-                    to="/movies/$movieId"
-                    params={{ movieId: String(movie.id) }}
-                  >
-                    상세 보기
-                    <img className="block size-4" src="/icons/arrow-right.svg" alt="" />
-                  </Link>
-                </div>
-              </article>
-            ))}
+                  <div className="flex h-full min-w-0 flex-1 flex-col items-start gap-2 pt-1">
+                    <h3 className="m-0 w-full text-lg leading-[24.3px] font-bold text-[#17191e]">
+                      {movie.title}
+                    </h3>
+                    <div className="flex w-full items-center gap-2 text-xs leading-[14px] font-normal text-[#969da8] max-[463px]:flex-wrap">
+                      <span>{movie.originalTitle}</span>
+                      <span>{movie.releaseDate}</span>
+                    </div>
+                    <p className="m-0 line-clamp-3 w-full text-[12.5px] leading-[20.25px] font-normal text-[#606774]">
+                      {movie.overview}
+                    </p>
+                    <Link
+                      className="mt-auto flex items-center gap-1 text-xs leading-[14px] font-extrabold text-[#2563eb] no-underline"
+                      to="/movies/$movieId"
+                      params={{ movieId: String(movie.id) }}
+                    >
+                      상세 보기
+                      <img className="block size-4" src="/icons/arrow-right.svg" alt="" />
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         ) : (
           <p className="m-0 border-b border-[#e3e6eb] px-0 py-20 text-center text-lg leading-6 font-bold text-[#606774]">
