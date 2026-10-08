@@ -1,0 +1,36 @@
+const BOOKMARK_STORAGE_KEY = "umcine-bookmarks";
+
+export function readBookmarkIds(): number[] {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
+  try {
+    const storedValue = window.localStorage.getItem(BOOKMARK_STORAGE_KEY);
+
+    if (storedValue === null) {
+      return [];
+    }
+
+    const parsedValue: unknown = JSON.parse(storedValue);
+
+    if (!Array.isArray(parsedValue)) {
+      return [];
+    }
+
+    return parsedValue.filter(
+      (movieId): movieId is number =>
+        typeof movieId === "number" && Number.isInteger(movieId) && movieId > 0,
+    );
+  } catch {
+    return [];
+  }
+}
+
+export function saveBookmarkIds(movieIds: number[]) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(movieIds));
+}

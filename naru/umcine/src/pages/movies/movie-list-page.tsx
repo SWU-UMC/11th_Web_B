@@ -1,22 +1,8 @@
-import { useState } from "react";
 import MovieGrid from "../../components/movies/movie-grid";
 import Pagination from "../../components/movies/pagination";
-import { movies as initialMovies } from "../../data/movies";
-import type { Movie } from "../../types/movie";
+import { movies } from "../../data/movies";
 
 export function MovieListPage() {
-  const [movies, setMovies] = useState<Movie[]>(initialMovies);
-
-  function handleToggleBookmark(movieId: number) {
-    setMovies((currentMovies) =>
-      currentMovies.map((movie) =>
-        movie.id === movieId
-          ? { ...movie, isBookmarked: !movie.isBookmarked }
-          : movie,
-      ),
-    );
-  }
-
   return (
     <>
       <main
@@ -26,7 +12,7 @@ export function MovieListPage() {
         <h1 className="m-0 text-[38px] leading-11 font-bold tracking-[-1.71px] text-[#17191e] max-[1199px]:w-full max-[683px]:text-[34px] max-[683px]:leading-10 max-[683px]:tracking-[-1.2px] max-[463px]:text-[30px] max-[463px]:leading-[38px] max-[463px]:tracking-[-0.8px]">
           영화 목록
         </h1>
-        <MovieGrid movies={movies} onToggleBookmark={handleToggleBookmark} />
+        <MovieGrid movies={movies} />
         <Pagination />
       </main>
       <footer className="flex h-[57px] w-full flex-[0_0_auto] items-center justify-end gap-2 border-t border-[#e3e6eb] bg-white px-20 py-4 text-xs leading-[14px] font-normal text-[#606774] max-[1199px]:h-auto max-[1199px]:min-h-[57px] max-[1199px]:px-10 max-[683px]:px-6 max-[463px]:items-start max-[463px]:px-4 max-[463px]:py-3.5">

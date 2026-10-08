@@ -1,9 +1,13 @@
 import { Link, useParams } from "@tanstack/react-router";
 import { movies } from "../../data/movies";
+import { useBookmarkStore } from "../../stores/bookmark-store";
 
 export function MovieDetailPage() {
   const { movieId } = useParams({ from: "/movies/$movieId" });
   const movie = movies.find(({ id }) => id === Number(movieId));
+  const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
+  const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
+  const isBookmarked = movie ? bookmarkedMovieIds.includes(movie.id) : false;
 
   if (!movie) {
     return (
@@ -66,6 +70,20 @@ export function MovieDetailPage() {
               {movie.tagline}
             </h2>
             <p className="m-0 text-sm leading-6 font-normal text-[#606774]">{movie.overview}</p>
+            <button
+              className="inline-flex h-[42px] w-fit cursor-pointer items-center justify-center gap-2 rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 text-[14px]! leading-[17px]! font-extrabold! whitespace-nowrap text-white"
+              type="button"
+              aria-label={`${movie.title} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`}
+              aria-pressed={isBookmarked}
+              onClick={() => toggleBookmark(movie.id)}
+            >
+              <img
+                className="block size-4 invert"
+                src={isBookmarked ? "/icons/bookmark.svg" : "/icons/bookmark-outline.svg"}
+                alt=""
+              />
+              즐겨찾기
+            </button>
           </div>
 
           <aside className="flex w-[360px] flex-[0_0_360px] flex-col items-start gap-2 border-l border-[#e3e6eb] pt-0 pr-0 pb-[41px] pl-[30px] max-[1199px]:w-full max-[1199px]:basis-full max-[1199px]:border-t max-[1199px]:border-l-0 max-[1199px]:px-0 max-[1199px]:pt-6 max-[1199px]:pb-0">
@@ -93,7 +111,7 @@ export function MovieDetailPage() {
               readOnly
             />
             <button
-              className="h-[42px] w-full rounded-lg border! border-solid! border-white! bg-[#17191e] px-4 text-sm leading-[17px] font-extrabold text-white opacity-100"
+              className="inline-flex h-[42px] w-full items-center justify-center rounded-lg border! border-solid! border-white! bg-[#17191e] px-4 text-sm leading-[17px] font-extrabold text-white opacity-100"
               type="button"
               disabled
             >
