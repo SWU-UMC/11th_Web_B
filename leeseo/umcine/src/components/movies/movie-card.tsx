@@ -1,9 +1,10 @@
-import type { Movie } from "../../types/movie";
 import { Link } from "@tanstack/react-router";
 import { BookmarkButton } from "../bookmark-button";
+import type { TmdbMovie } from "../../api/models";
+import { TMDB_IMAGE_BASE_URL } from "../../config/env";
 
 interface MovieCardProps {
-  movie: Movie;
+  movie: TmdbMovie;
 }
 
 const MovieCard = ({
@@ -18,7 +19,7 @@ const MovieCard = ({
           params={{ movieId: String(movie.id) }}
         >
           <img
-            src={movie.posterPath}
+            src={`${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}
             alt={`${movie.title} 포스터`}
             className="h-[274px] w-[241.6px] rounded-[10px]"
           />
@@ -38,7 +39,7 @@ const MovieCard = ({
 
       {/* 개봉일 */}
       <div className="flex items-center justify-start font-[Pretendard] text-xs font-normal leading-none tracking-normal text-[#969DA8]">
-        {movie.releaseDate}
+        {movie.release_date}
       </div>
     </div>
   );
