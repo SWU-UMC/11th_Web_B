@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import MovieGrid from "../../components/movies/movie-grid";
 import { getMovies } from "../../api/movies/get-movies";
 import type { TmdbMovie } from "../../api/models";
+import Footer from "../../components/layout/footer";
 
 const MovieListPage = () => {
 
@@ -45,6 +46,11 @@ const MovieListPage = () => {
         return <div>조건에 맞는 결과가 없어요.</div>;
     }
 
-    return <MovieGrid movies={movies} />;
+    return (
+        <>
+            <MovieGrid movies={movies} />
+            <Footer/>
+        </>
+    );
 }
 export default MovieListPage;
