@@ -1,20 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "@tanstack/react-router";
-import { useMovies } from "../../contexts/use-movies";
+import { getMovieDetail } from "../../api/movies/get-movie-detail";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaStar } from "react-icons/fa6";
 import { BookmarkButton } from "../../components/bookmark-button";
+import { TMDB_IMAGE_BASE_URL } from "../../config/env";
+import type { TmdbMovieDetail } from "../../api/models";
 
 const MovieDetailPage = () => {
   const { movieId } = useParams({
     from: "/movies/$movieId",
   });
 
-  const { movieList} = useMovies();
+  const [movie, setMovie] = useState<TmdbMovieDetail>();
 
-  const movie = movieList.find(
-    (item) => item.id === Number(movieId)
-  );
+  useEffect(() => {
+    async function loadMovieDetail() {
+      try {
+        const response = await getMovieDetail(Number(movieId));
+        setMovie(response);
+      } catch (error) {
+        console.error("영화 상세 정보를 불러오지 못했어요.", error);
+      }
+    }
+
+    loadMovieDetail();
+  }, [movieId]);
 
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
@@ -42,7 +53,7 @@ const MovieDetailPage = () => {
       {/* 상단 배경 영역 */}
       <div className="relative flex h-[360px] w-full flex-col justify-between overflow-hidden box-border px-12 py-8 max-md:px-5 max-md:py-6">
         <img
-          src={movie.backdropPath}
+          src={`${TMDB_IMAGE_BASE_URL}${movie.backdrop_path}`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 z-0 h-full w-full object-cover"
@@ -64,12 +75,12 @@ const MovieDetailPage = () => {
           </h1>
 
           <p className="my-[2px] mb-[6px] text-sm text-white">
-            {movie.originalTitle}
+            {movie.title}
           </p>
 
           <div className="flex items-center gap-2 bg-transparent text-[13px] text-white">
             <span className="text-white">
-              {movie.releaseDate}
+              {movie.release_date}
             </span>
 
             <span className="text-white">
@@ -88,7 +99,7 @@ const MovieDetailPage = () => {
         {/* 왼쪽: 포스터 */}
         <div className="h-[286px] w-[200px] max-[1100px]:w-full max-[768px]:h-auto max-[768px]:w-full">
           <img
-            src={movie.posterPath}
+            src={`${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}
             alt={`${movie.title} 포스터`}
             className="h-[286px] w-[200px] rounded-[10px] object-cover shadow-[0_4px_12px_rgba(0,0,0,0.12)] max-[1100px]:w-full max-[768px]:h-auto max-[768px]:aspect-[200/286]"
           />
