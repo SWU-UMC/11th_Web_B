@@ -1,3 +1,4 @@
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getMovies } from "../../api/movies/get-movies";
 import type { TmdbMovieListResponse } from "../../api/movies/models";
@@ -12,9 +13,15 @@ interface MovieListResult {
 }
 
 export function MovieListPage() {
-  const [page, setPage] = useState(1);
+  const { page } = useSearch({ from: "/" });
+  const navigate = useNavigate({ from: "/" });
   const [result, setResult] = useState<MovieListResult | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+
+  // Discard cached results even when navigation returns to a previous page.
+  if (result && result.page !== page) {
+    setResult(null);
+  }
 
   useEffect(() => {
     let isCurrent = true;
@@ -88,7 +95,9 @@ export function MovieListPage() {
           <Pagination
             currentPage={page}
             totalPages={totalPages}
-            onPageChange={setPage}
+            onPageChange={(nextPage) => {
+              void navigate({ to: "/", search: { page: nextPage } });
+            }}
           />
         )}
       </main>
