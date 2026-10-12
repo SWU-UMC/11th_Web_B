@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { useBookmarkStore } from "../../stores/bookmark-store";
-import type { Movie } from "../../types/movie";
 import { cn } from "../../utils/cn";
 
-export type MovieCardMovie = Pick<
-  Movie,
-  "id" | "title" | "releaseDate" | "posterPath"
->;
+export interface MovieCardMovie {
+  id: number;
+  title: string;
+  releaseDate: string;
+  posterPath: string;
+}
 
 interface MovieCardProps {
   movie: MovieCardMovie;
