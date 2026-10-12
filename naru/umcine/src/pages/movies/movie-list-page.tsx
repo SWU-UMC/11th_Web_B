@@ -1,10 +1,10 @@
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { toMovieCardMovie } from "../../api/movies/adapters";
 import { getMovies } from "../../api/movies/get-movies";
 import type { TmdbMovieListResponse } from "../../api/movies/models";
 import MovieGrid from "../../components/movies/movie-grid";
 import Pagination from "../../components/movies/pagination";
-import { getTmdbPosterUrl } from "../../utils/tmdb-image";
 
 interface MovieListResult {
   page: number;
@@ -47,13 +47,7 @@ export function MovieListPage() {
   const data = !isLoading ? result?.data : null;
   const error = !isLoading ? result?.error : null;
   const totalPages = Math.min(data?.total_pages ?? 0, 500);
-  const movies =
-    data?.results.map((movie) => ({
-      id: movie.id,
-      title: movie.title,
-      releaseDate: movie.release_date,
-      posterPath: getTmdbPosterUrl(movie.poster_path),
-    })) ?? [];
+  const movies = data?.results.map(toMovieCardMovie) ?? [];
 
   return (
     <>

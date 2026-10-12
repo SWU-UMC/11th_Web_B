@@ -1,11 +1,11 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type SubmitEvent } from "react";
+import { toMovieCardMovie } from "../../api/movies/adapters";
 import { searchMovies } from "../../api/movies/search-movies";
 import type { TmdbMovieListResponse } from "../../api/movies/models";
 import MovieCard from "../../components/movies/movie-card";
 import { useBookmarkStore } from "../../stores/bookmark-store";
 import { cn } from "../../utils/cn";
-import { getTmdbPosterUrl } from "../../utils/tmdb-image";
 
 type SearchCardView = "default" | "compact";
 
@@ -88,11 +88,8 @@ export function SearchPage() {
   const error = result?.query === displayQuery ? result.error : null;
   const searchResults =
     data?.results.map((movie) => ({
-      id: movie.id,
-      title: movie.title,
+      ...toMovieCardMovie(movie),
       originalTitle: movie.original_title,
-      releaseDate: movie.release_date,
-      posterPath: getTmdbPosterUrl(movie.poster_path),
       overview: movie.overview,
     })) ?? [];
 
@@ -228,10 +225,10 @@ export function SearchPage() {
                     key={movie.id}
                   >
                     <div className="relative h-[190px] w-[126px] flex-[0_0_126px] overflow-hidden rounded-[10px] bg-[#f6f7f9] max-[463px]:h-[151px] max-[463px]:w-[100px] max-[463px]:basis-[100px]">
-                      {movie.posterPath ? (
+                      {movie.posterUrl ? (
                         <img
                           className="block size-full object-cover"
-                          src={movie.posterPath}
+                          src={movie.posterUrl}
                           alt={`${movie.title} 포스터`}
                         />
                       ) : (
@@ -269,6 +266,7 @@ export function SearchPage() {
                       <div className="flex w-full items-center gap-2 text-xs leading-[14px] font-normal text-[#969da8] max-[463px]:flex-wrap">
                         <span>{movie.originalTitle}</span>
                         <span>{movie.releaseDate}</span>
+                        <span>평점 {movie.rating.toFixed(1)}</span>
                       </div>
                       <p className="m-0 line-clamp-3 w-full text-[12.5px] leading-[20.25px] font-normal text-[#606774]">
                         {movie.overview}
