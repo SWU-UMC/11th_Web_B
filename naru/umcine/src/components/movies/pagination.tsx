@@ -1,17 +1,28 @@
-import { useState } from "react";
 import { cn } from "../../utils/cn";
 
-const pages = [1, 2, 3, 4, 5];
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
 
-export default function Pagination() {
-  const [currentPage, setCurrentPage] = useState(1);
+export default function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: PaginationProps) {
+  const startPage = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+  const pages = Array.from(
+    { length: Math.min(5, totalPages) },
+    (_, index) => startPage + index,
+  );
 
   function showPreviousPage() {
-    setCurrentPage((page) => Math.max(1, page - 1));
+    onPageChange(Math.max(1, currentPage - 1));
   }
 
   function showNextPage() {
-    setCurrentPage((page) => Math.min(pages.length, page + 1));
+    onPageChange(Math.min(totalPages, currentPage + 1));
   }
 
   return (
@@ -23,6 +34,7 @@ export default function Pagination() {
         className="grid size-6 cursor-pointer place-items-center bg-transparent p-0"
         type="button"
         aria-label="이전 페이지"
+        disabled={currentPage === 1}
         onClick={showPreviousPage}
       >
         <img className="block size-6" src="/icons/chevron-left.svg" alt="" />
@@ -43,7 +55,7 @@ export default function Pagination() {
               type="button"
               key={page}
               aria-current={isCurrentPage ? "page" : undefined}
-              onClick={() => setCurrentPage(page)}
+              onClick={() => onPageChange(page)}
             >
               {page}
             </button>
@@ -55,6 +67,7 @@ export default function Pagination() {
         className="grid size-6 cursor-pointer place-items-center bg-transparent p-0"
         type="button"
         aria-label="다음 페이지"
+        disabled={currentPage === totalPages}
         onClick={showNextPage}
       >
         <img className="block size-6" src="/icons/chevron-right.svg" alt="" />

@@ -3,8 +3,13 @@ import { useBookmarkStore } from "../../stores/bookmark-store";
 import type { Movie } from "../../types/movie";
 import { cn } from "../../utils/cn";
 
+export type MovieCardMovie = Pick<
+  Movie,
+  "id" | "title" | "releaseDate" | "posterPath"
+>;
+
 interface MovieCardProps {
-  movie: Movie;
+  movie: MovieCardMovie;
 }
 
 export default function MovieCard({ movie }: MovieCardProps) {
@@ -21,11 +26,17 @@ export default function MovieCard({ movie }: MovieCardProps) {
           to="/movies/$movieId"
           params={{ movieId: String(movie.id) }}
         >
-          <img
-            className="block h-full w-full object-cover object-center"
-            src={movie.posterPath}
-            alt={`${movie.title} 포스터`}
-          />
+          {movie.posterPath ? (
+            <img
+              className="block h-full w-full object-cover object-center"
+              src={movie.posterPath}
+              alt={`${movie.title} 포스터`}
+            />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center text-sm text-[#606774]">
+              이미지 없음
+            </span>
+          )}
         </Link>
         <button
           className={cn(
