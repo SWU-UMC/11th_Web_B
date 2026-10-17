@@ -1,11 +1,19 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type SubmitEvent } from "react";
+import { toMovieCardMovie } from "../../api/movies/adapters";
+import { searchMovies } from "../../api/movies/search-movies";
+import type { TmdbMovieListResponse } from "../../api/movies/models";
 import MovieCard from "../../components/movies/movie-card";
-import { movies } from "../../data/movies";
 import { useBookmarkStore } from "../../stores/bookmark-store";
 import { cn } from "../../utils/cn";
 
 type SearchCardView = "default" | "compact";
+
+interface SearchResult {
+  query: string;
+  data: TmdbMovieListResponse | null;
+  error: string | null;
+}
 
 const SEARCH_CARD_VIEW_STORAGE_KEY = "umcine-search-card-view";
 
@@ -26,6 +34,40 @@ export function SearchPage() {
   const [cardView, setCardView] = useState<SearchCardView>(readSearchCardView);
   const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
   const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
+  const [result, setResult] = useState<SearchResult | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const displayQuery = query?.trim() ?? "";
+
+  // Discard cached results even when navigation returns to a previous query.
+  if (result && result.query !== displayQuery) {
+    setResult(null);
+  }
+
+  useEffect(() => {
+    if (!displayQuery) return;
+
+    let isCurrent = true;
+
+    searchMovies({ query: displayQuery })
+      .then((data) => {
+        if (isCurrent) {
+          setResult({ query: displayQuery, data, error: null });
+        }
+      })
+      .catch(() => {
+        if (isCurrent) {
+          setResult({
+            query: displayQuery,
+            data: null,
+            error: "검색 결과를 불러오지 못했어요.",
+          });
+        }
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [displayQuery, retryCount]);
 
   useEffect(() => {
     let isCurrent = true;
@@ -41,15 +83,15 @@ export function SearchPage() {
     };
   }, [query]);
 
-  const displayQuery = query?.trim() ?? "";
-  const normalizedQuery = displayQuery.toLowerCase();
-  const searchResults = normalizedQuery
-    ? movies.filter(
-        (movie) =>
-          movie.title.toLowerCase().includes(normalizedQuery) ||
-          movie.originalTitle.toLowerCase().includes(normalizedQuery),
-      )
-    : [];
+  const isLoading = Boolean(displayQuery) && result?.query !== displayQuery;
+  const data = result?.query === displayQuery ? result.data : null;
+  const error = result?.query === displayQuery ? result.error : null;
+  const searchResults =
+    data?.results.map((movie) => ({
+      ...toMovieCardMovie(movie),
+      originalTitle: movie.original_title,
+      overview: movie.overview,
+    })) ?? [];
 
   function updateSearch(queryValue: string) {
     const trimmedQuery = queryValue.trim();
@@ -120,7 +162,11 @@ export function SearchPage() {
           </h2>
           <div className="flex flex-none items-center gap-3">
             <span className="text-xs leading-[14px] font-normal text-[#969da8] max-[463px]:hidden">
-              영화 {searchResults.length}편 · 1페이지
+              {isLoading
+                ? "검색 중…"
+                : error
+                  ? "검색 실패"
+                  : `영화 ${data?.total_results ?? 0}편 · ${data?.page ?? 1}페이지`}
             </span>
             <div
               className="flex h-8 items-center rounded-lg border border-[#e3e6eb] bg-white p-0.5"
@@ -147,7 +193,27 @@ export function SearchPage() {
           </div>
         </div>
 
-        {searchResults.length > 0 ? (
+        {isLoading ? (
+          <p className="m-0 border-b border-[#e3e6eb] py-20 text-center text-lg leading-6 font-bold text-[#606774]" role="status">
+            검색 결과를 불러오는 중이에요.
+          </p>
+        ) : error ? (
+          <div className="flex flex-col items-center gap-4 border-b border-[#e3e6eb] py-20">
+            <p className="m-0 text-lg leading-6 font-bold text-[#606774]" role="alert">
+              {error}
+            </p>
+            <button
+              className="cursor-pointer rounded-lg bg-[#17191e] px-4 py-2 text-sm font-bold text-white"
+              type="button"
+              onClick={() => {
+                setResult(null);
+                setRetryCount((count) => count + 1);
+              }}
+            >
+              다시 시도
+            </button>
+          </div>
+        ) : searchResults.length > 0 ? (
           cardView === "default" ? (
             <div className="grid grid-cols-2 gap-x-10 max-[1199px]:grid-cols-1">
               {searchResults.map((movie) => {
@@ -159,11 +225,17 @@ export function SearchPage() {
                     key={movie.id}
                   >
                     <div className="relative h-[190px] w-[126px] flex-[0_0_126px] overflow-hidden rounded-[10px] bg-[#f6f7f9] max-[463px]:h-[151px] max-[463px]:w-[100px] max-[463px]:basis-[100px]">
-                      <img
-                        className="block size-full object-cover"
-                        src={movie.posterPath}
-                        alt={`${movie.title} 포스터`}
-                      />
+                      {movie.posterUrl ? (
+                        <img
+                          className="block size-full object-cover"
+                          src={movie.posterUrl}
+                          alt={`${movie.title} 포스터`}
+                        />
+                      ) : (
+                        <span className="flex size-full items-center justify-center text-sm text-[#606774]">
+                          이미지 없음
+                        </span>
+                      )}
                       <button
                         className={cn(
                           "absolute top-2.5 right-2.5 grid size-[34px] cursor-pointer place-items-center rounded-lg border! border-solid! p-0",
@@ -194,6 +266,7 @@ export function SearchPage() {
                       <div className="flex w-full items-center gap-2 text-xs leading-[14px] font-normal text-[#969da8] max-[463px]:flex-wrap">
                         <span>{movie.originalTitle}</span>
                         <span>{movie.releaseDate}</span>
+                        <span>평점 {movie.rating.toFixed(1)}</span>
                       </div>
                       <p className="m-0 line-clamp-3 w-full text-[12.5px] leading-[20.25px] font-normal text-[#606774]">
                         {movie.overview}
@@ -223,7 +296,7 @@ export function SearchPage() {
             </div>
           )
         ) : (
-          <p className="m-0 border-b border-[#e3e6eb] px-0 py-20 text-center text-lg leading-6 font-bold text-[#606774]">
+          <p className="m-0 border-b border-[#e3e6eb] px-0 py-20 text-center text-lg leading-6 font-bold text-[#606774]" role="status">
             검색 결과가 없어요.
           </p>
         )}

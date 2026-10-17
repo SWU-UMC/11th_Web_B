@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { useBookmarkStore } from "../../stores/bookmark-store";
-import type { Movie } from "../../types/movie";
+import type { MovieCardMovie } from "../../types/movie-card";
 import { cn } from "../../utils/cn";
 
 interface MovieCardProps {
-  movie: Movie;
+  movie: MovieCardMovie;
 }
 
 export default function MovieCard({ movie }: MovieCardProps) {
@@ -21,11 +21,17 @@ export default function MovieCard({ movie }: MovieCardProps) {
           to="/movies/$movieId"
           params={{ movieId: String(movie.id) }}
         >
-          <img
-            className="block h-full w-full object-cover object-center"
-            src={movie.posterPath}
-            alt={`${movie.title} 포스터`}
-          />
+          {movie.posterUrl ? (
+            <img
+              className="block h-full w-full object-cover object-center"
+              src={movie.posterUrl}
+              alt={`${movie.title} 포스터`}
+            />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center text-sm text-[#606774]">
+              이미지 없음
+            </span>
+          )}
         </Link>
         <button
           className={cn(
@@ -58,8 +64,9 @@ export default function MovieCard({ movie }: MovieCardProps) {
         </h2>
       </div>
       <div className="h-[14px] w-full flex-[0_0_14px]">
-        <p className="m-0 text-xs leading-[14px] font-normal text-[#969da8]">
-          {movie.releaseDate}
+        <p className="m-0 flex justify-between gap-2 text-xs leading-[14px] font-normal text-[#969da8]">
+          <span>{movie.releaseDate}</span>
+          <span>평점 {movie.rating.toFixed(1)}</span>
         </p>
       </div>
     </article>
