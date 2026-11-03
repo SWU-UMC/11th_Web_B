@@ -13,7 +13,7 @@ export function MovieDetailPage() {
     ...movieDetailQueryOptions(movieId),
     enabled: isValidId,
   });
-  const isLoading = isValidId && (isPending || (Boolean(requestError) && isFetching));
+  const isLoading = isValidId && !movie && (isPending || (Boolean(requestError) && isFetching));
   const error = requestError
     ? requestError instanceof HTTPError && requestError.response.status === 404
       ? "not-found"
@@ -22,8 +22,22 @@ export function MovieDetailPage() {
   const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
   const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
   const isBookmarked = movie ? bookmarkedMovieIds.includes(movie.id) : false;
+  const requestErrorMessage = "영화 정보를 불러오지 못했어요.";
+  const retryButton = (
+    <button
+      className="cursor-pointer rounded-lg bg-[#17191e] px-4 py-2 text-sm font-bold text-white"
+      type="button"
+      disabled={isFetching}
+      aria-busy={isFetching}
+      onClick={() => {
+        void refetch();
+      }}
+    >
+      {isFetching ? "다시 시도 중…" : "다시 시도"}
+    </button>
+  );
 
-  if (!isValidId || !movie) {
+  if (!isValidId || error === "not-found" || !movie) {
     return (
       <main className="grid w-full flex-1 content-center justify-items-center gap-4 px-6 py-20">
         <p className="m-0 text-2xl leading-8 font-bold text-[#17191e]">
@@ -34,19 +48,11 @@ export function MovieDetailPage() {
                 ? "영화 정보를 불러오는 중이에요."
                 : error === "not-found"
                   ? "존재하지 않는 영화예요."
-                  : "영화 정보를 불러오지 못했어요."}
+                  : requestErrorMessage}
           </span>
         </p>
         {isValidId && !isLoading && error === "request" && (
-          <button
-            className="cursor-pointer rounded-lg bg-[#17191e] px-4 py-2 text-sm font-bold text-white"
-            type="button"
-            onClick={() => {
-              void refetch();
-            }}
-          >
-            다시 시도
-          </button>
+          retryButton
         )}
         <Link className="text-sm leading-5 font-bold text-[#2563eb]" to="/">
           영화 목록으로 돌아가기
@@ -61,6 +67,14 @@ export function MovieDetailPage() {
   return (
     <>
       <main className="w-full flex-[1_0_auto]">
+        {error === "request" && (
+          <div className="flex w-full flex-col items-center gap-4 px-6 py-6">
+            <p className="m-0 text-[#606774]" role="alert">
+              {requestErrorMessage}
+            </p>
+            {retryButton}
+          </div>
+        )}
         <section className="relative h-[360px] w-full overflow-hidden bg-[#17191e] text-white max-[683px]:h-80 max-[463px]:h-[300px]">
           {backdropUrl ? (
             <img
