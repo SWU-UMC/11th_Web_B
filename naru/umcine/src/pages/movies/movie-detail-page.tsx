@@ -10,7 +10,7 @@ export function MovieDetailPage() {
   const id = Number(movieId);
   const isValidId = /^\d+$/.test(movieId) && Number.isSafeInteger(id) && id > 0;
   const { data: movie, error: requestError, isPending, isFetching, refetch } = useQuery({
-    ...movieDetailQueryOptions(movieId),
+    ...movieDetailQueryOptions(id),
     enabled: isValidId,
   });
   const isLoading = isValidId && !movie && (isPending || (Boolean(requestError) && isFetching));

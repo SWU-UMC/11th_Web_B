@@ -20,10 +20,10 @@ export function movieSearchQueryOptions(normalizedQuery: string) {
   });
 }
 
-export function movieDetailQueryOptions(movieId: string) {
+export function movieDetailQueryOptions(movieId: number) {
   return queryOptions({
     queryKey: ["movies", "detail", movieId] as const,
-    queryFn: () => getMovieDetail({ movieId: Number(movieId) }),
+    queryFn: () => getMovieDetail({ movieId }),
     staleTime: 30 * 1000,
     retry: false,
   });
