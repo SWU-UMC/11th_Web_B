@@ -1,65 +1,31 @@
 import { Link, useParams } from "@tanstack/react-router";
 import { HTTPError } from "ky";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { getMovieDetail } from "../../api/movies/get-movie-detail";
-import type { TmdbMovieDetail } from "../../api/movies/models";
 import { useBookmarkStore } from "../../stores/bookmark-store";
 import { getTmdbBackdropUrl, getTmdbPosterUrl } from "../../utils/tmdb-image";
-
-interface MovieDetailResult {
-  movieId: string;
-  data: TmdbMovieDetail | null;
-  error: "not-found" | "request" | null;
-}
 
 export function MovieDetailPage() {
   const { movieId } = useParams({ from: "/movies/$movieId" });
   const id = Number(movieId);
   const isValidId = /^\d+$/.test(movieId) && Number.isSafeInteger(id) && id > 0;
-  const [result, setResult] = useState<MovieDetailResult | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
-
-  if (result && result.movieId !== movieId) {
-    setResult(null);
-  }
-
-  useEffect(() => {
-    if (!isValidId) return;
-
-    let isCurrent = true;
-
-    getMovieDetail({ movieId: id })
-      .then((data) => {
-        if (isCurrent) {
-          setResult({ movieId, data, error: null });
-        }
-      })
-      .catch((error: unknown) => {
-        if (isCurrent) {
-          setResult({
-            movieId,
-            data: null,
-            error:
-              error instanceof HTTPError && error.response.status === 404
-                ? "not-found"
-                : "request",
-          });
-        }
-      });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [id, isValidId, movieId, retryCount]);
-
-  const movie = result?.movieId === movieId ? result.data : null;
-  const error = result?.movieId === movieId ? result.error : null;
-  const isLoading = isValidId && !movie && !error;
+  const { data: movie, error: requestError, isPending, isFetching, refetch } = useQuery({
+    queryKey: ["movies", "detail", movieId],
+    queryFn: () => getMovieDetail({ movieId: id }),
+    enabled: isValidId,
+    retry: false,
+  });
+  const isLoading = isValidId && (isPending || (Boolean(requestError) && isFetching));
+  const error = requestError
+    ? requestError instanceof HTTPError && requestError.response.status === 404
+      ? "not-found"
+      : "request"
+    : null;
   const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
   const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
   const isBookmarked = movie ? bookmarkedMovieIds.includes(movie.id) : false;
 
-  if (!movie) {
+  if (!isValidId || !movie) {
     return (
       <main className="grid w-full flex-1 content-center justify-items-center gap-4 px-6 py-20">
         <p className="m-0 text-2xl leading-8 font-bold text-[#17191e]">
@@ -73,13 +39,12 @@ export function MovieDetailPage() {
                   : "영화 정보를 불러오지 못했어요."}
           </span>
         </p>
-        {error === "request" && (
+        {isValidId && !isLoading && error === "request" && (
           <button
             className="cursor-pointer rounded-lg bg-[#17191e] px-4 py-2 text-sm font-bold text-white"
             type="button"
             onClick={() => {
-              setResult(null);
-              setRetryCount((count) => count + 1);
+              void refetch();
             }}
           >
             다시 시도

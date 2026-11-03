@@ -1,51 +1,20 @@
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { toMovieCardMovie } from "../../api/movies/adapters";
 import { getMovies } from "../../api/movies/get-movies";
-import type { TmdbMovieListResponse } from "../../api/movies/models";
 import MovieGrid from "../../components/movies/movie-grid";
 import Pagination from "../../components/movies/pagination";
-
-interface MovieListResult {
-  page: number;
-  data: TmdbMovieListResponse | null;
-  error: string | null;
-}
 
 export function MovieListPage() {
   const { page } = useSearch({ from: "/" });
   const navigate = useNavigate({ from: "/" });
-  const [result, setResult] = useState<MovieListResult | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
-
-  // Discard cached results even when navigation returns to a previous page.
-  if (result && result.page !== page) {
-    setResult(null);
-  }
-
-  useEffect(() => {
-    let isCurrent = true;
-
-    getMovies({ page })
-      .then((data) => {
-        if (isCurrent) {
-          setResult({ page, data, error: null });
-        }
-      })
-      .catch(() => {
-        if (isCurrent) {
-          setResult({ page, data: null, error: "영화 목록을 불러오지 못했어요." });
-        }
-      });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [page, retryCount]);
-
-  const isLoading = result?.page !== page;
-  const data = !isLoading ? result?.data : null;
-  const error = !isLoading ? result?.error : null;
+  const { data, isPending, isError, isFetching, refetch } = useQuery({
+    queryKey: ["movies", "list", { page }],
+    queryFn: () => getMovies({ page }),
+    retry: false,
+  });
+  const isLoading = isPending || (isError && isFetching);
+  const error = isError ? "영화 목록을 불러오지 못했어요." : null;
   const totalPages = Math.min(data?.total_pages ?? 0, 500);
   const movies = data?.results.map(toMovieCardMovie) ?? [];
 
@@ -71,8 +40,7 @@ export function MovieListPage() {
               className="cursor-pointer rounded-lg bg-[#17191e] px-4 py-2 text-sm font-bold text-white"
               type="button"
               onClick={() => {
-                setResult(null);
-                setRetryCount((count) => count + 1);
+                void refetch();
               }}
             >
               다시 시도
