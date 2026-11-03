@@ -12,6 +12,7 @@ export function MovieDetailPage() {
   const { data: movie, error: requestError, isPending, isFetching, refetch } = useQuery({
     queryKey: ["movies", "detail", movieId],
     queryFn: () => getMovieDetail({ movieId: id }),
+    staleTime: 30 * 1000,
     enabled: isValidId,
     retry: false,
   });
