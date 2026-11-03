@@ -1,7 +1,7 @@
 import { Link, useParams } from "@tanstack/react-router";
 import { HTTPError } from "ky";
 import { useQuery } from "@tanstack/react-query";
-import { getMovieDetail } from "../../api/movies/get-movie-detail";
+import { movieDetailQueryOptions } from "../../api/movies/query-options";
 import { useBookmarkStore } from "../../stores/bookmark-store";
 import { getTmdbBackdropUrl, getTmdbPosterUrl } from "../../utils/tmdb-image";
 
@@ -10,11 +10,8 @@ export function MovieDetailPage() {
   const id = Number(movieId);
   const isValidId = /^\d+$/.test(movieId) && Number.isSafeInteger(id) && id > 0;
   const { data: movie, error: requestError, isPending, isFetching, refetch } = useQuery({
-    queryKey: ["movies", "detail", movieId],
-    queryFn: () => getMovieDetail({ movieId: id }),
-    staleTime: 30 * 1000,
+    ...movieDetailQueryOptions(movieId),
     enabled: isValidId,
-    retry: false,
   });
   const isLoading = isValidId && (isPending || (Boolean(requestError) && isFetching));
   const error = requestError

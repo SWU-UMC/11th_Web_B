@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type SubmitEvent } from "react";
 import { toMovieCardMovie } from "../../api/movies/adapters";
-import { searchMovies } from "../../api/movies/search-movies";
+import { movieSearchQueryOptions } from "../../api/movies/query-options";
 import MovieCard from "../../components/movies/movie-card";
 import { useBookmarkStore } from "../../stores/bookmark-store";
 import { cn } from "../../utils/cn";
@@ -29,12 +29,9 @@ export function SearchPage() {
   const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
   const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
   const normalizedQuery = query?.trim() ?? "";
-  const { data, isPending, isError, isFetching, refetch } = useQuery({
-    queryKey: ["movies", "search", { query: normalizedQuery }],
-    queryFn: () => searchMovies({ query: normalizedQuery }),
-    enabled: Boolean(normalizedQuery),
-    retry: false,
-  });
+  const { data, isPending, isError, isFetching, refetch } = useQuery(
+    movieSearchQueryOptions(normalizedQuery),
+  );
 
   useEffect(() => {
     let isCurrent = true;

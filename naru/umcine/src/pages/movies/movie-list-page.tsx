@@ -1,18 +1,16 @@
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { toMovieCardMovie } from "../../api/movies/adapters";
-import { getMovies } from "../../api/movies/get-movies";
+import { movieListQueryOptions } from "../../api/movies/query-options";
 import MovieGrid from "../../components/movies/movie-grid";
 import Pagination from "../../components/movies/pagination";
 
 export function MovieListPage() {
   const { page } = useSearch({ from: "/" });
   const navigate = useNavigate({ from: "/" });
-  const { data, isPending, isError, isFetching, refetch } = useQuery({
-    queryKey: ["movies", "list", { page }],
-    queryFn: () => getMovies({ page }),
-    retry: false,
-  });
+  const { data, isPending, isError, isFetching, refetch } = useQuery(
+    movieListQueryOptions(page),
+  );
   const isLoading = isPending || (isError && isFetching);
   const error = isError ? "영화 목록을 불러오지 못했어요." : null;
   const totalPages = Math.min(data?.total_pages ?? 0, 500);
