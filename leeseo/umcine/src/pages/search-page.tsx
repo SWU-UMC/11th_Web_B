@@ -1,25 +1,29 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type SubmitEvent } from "react";
-import { movies } from "../data/movies";
+import { useQuery } from "@tanstack/react-query";
+import { getSearchMovies } from "../api/movies/search-movies";
 
 const SearchPage = () => {
   const { query } = useSearch({ from: "/search" });
   const navigate = useNavigate({ from: "/search" });
+
   const [searchText, setSearchText] = useState(query ?? "");
 
+  // URL의 검색어가 변경되면 검색창에도 반영
   useEffect(() => {
     setSearchText(query ?? "");
   }, [query]);
 
   const normalizedQuery = query?.trim().toLowerCase() ?? "";
 
-  const searchResults = normalizedQuery
-    ? movies.filter(
-        (movie) =>
-          movie.title.toLowerCase().includes(normalizedQuery) ||
-          movie.originalTitle.toLowerCase().includes(normalizedQuery),
-      )
-    : [];
+  // 검색 API 호출
+  const searchQuery = useQuery({
+    queryKey: ["movies", "search", normalizedQuery],
+    queryFn: () => getSearchMovies({ query: normalizedQuery }),
+    enabled: !!normalizedQuery,
+  });
+
+  const searchResults = searchQuery.data ?? [];
 
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -81,18 +85,25 @@ const SearchPage = () => {
       {/* 검색 결과 */}
       {normalizedQuery && (
         <div className="mx-auto mt-[80px] max-w-[1280px]">
-          {/* 검색 결과 제목 + 개수 */}
           <div className="mb-[24px] flex items-end justify-between">
             <h2 className="text-[24px] font-bold leading-[32px] text-[#1A1D24]">
               ‘{query}’ 검색 결과
             </h2>
 
             <span className="text-[14px] leading-[20px] text-[#606774]">
-              영화 {searchResults.length}편 | 페이지 1
+              영화 {searchQuery.isSuccess ? searchResults.length : 0}편
             </span>
           </div>
 
-          {searchResults.length === 0 ? (
+          {searchQuery.isPending ? (
+            <p className="py-[80px] text-center text-[16px] text-[#606774]">
+              검색 결과를 불러오는 중이에요.
+            </p>
+          ) : searchQuery.isError ? (
+            <p className="py-[80px] text-center text-[16px] text-[#606774]">
+              검색 결과를 불러오지 못했어요.
+            </p>
+          ) : searchResults.length === 0 ? (
             <p className="py-[80px] text-center text-[16px] leading-[24px] text-[#606774]">
               검색 결과가 없어요.
             </p>
