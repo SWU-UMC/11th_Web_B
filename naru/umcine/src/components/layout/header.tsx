@@ -10,7 +10,7 @@ export default function Header() {
   });
   const isMoviesActive = pathname === "/" || pathname.startsWith("/movies/");
   const isSearchActive = pathname === "/search";
-  const isProfileActive = pathname === "/mypage";
+  const isProfileActive = pathname === "/mypage" || pathname.startsWith("/mypage/");
 
   return (
     <header className="flex h-[91px] w-full shrink-0 items-center justify-between border-b border-[#e3e6eb] bg-white px-20 py-6 max-[1199px]:px-10 max-[683px]:h-auto max-[683px]:min-h-[75px] max-[683px]:px-6 max-[683px]:py-4 max-[463px]:px-4">
