@@ -1,65 +1,43 @@
 import { Link, useParams } from "@tanstack/react-router";
 import { HTTPError } from "ky";
-import { useEffect, useState } from "react";
-import { getMovieDetail } from "../../api/movies/get-movie-detail";
-import type { TmdbMovieDetail } from "../../api/movies/models";
+import { useQuery } from "@tanstack/react-query";
+import { movieDetailQueryOptions } from "../../api/movies/query-options";
 import { useBookmarkStore } from "../../stores/bookmark-store";
 import { getTmdbBackdropUrl, getTmdbPosterUrl } from "../../utils/tmdb-image";
-
-interface MovieDetailResult {
-  movieId: string;
-  data: TmdbMovieDetail | null;
-  error: "not-found" | "request" | null;
-}
 
 export function MovieDetailPage() {
   const { movieId } = useParams({ from: "/movies/$movieId" });
   const id = Number(movieId);
   const isValidId = /^\d+$/.test(movieId) && Number.isSafeInteger(id) && id > 0;
-  const [result, setResult] = useState<MovieDetailResult | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
-
-  if (result && result.movieId !== movieId) {
-    setResult(null);
-  }
-
-  useEffect(() => {
-    if (!isValidId) return;
-
-    let isCurrent = true;
-
-    getMovieDetail({ movieId: id })
-      .then((data) => {
-        if (isCurrent) {
-          setResult({ movieId, data, error: null });
-        }
-      })
-      .catch((error: unknown) => {
-        if (isCurrent) {
-          setResult({
-            movieId,
-            data: null,
-            error:
-              error instanceof HTTPError && error.response.status === 404
-                ? "not-found"
-                : "request",
-          });
-        }
-      });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [id, isValidId, movieId, retryCount]);
-
-  const movie = result?.movieId === movieId ? result.data : null;
-  const error = result?.movieId === movieId ? result.error : null;
-  const isLoading = isValidId && !movie && !error;
+  const { data: movie, error: requestError, isPending, isFetching, refetch } = useQuery({
+    ...movieDetailQueryOptions(id),
+    enabled: isValidId,
+  });
+  const isLoading = isValidId && !movie && (isPending || (Boolean(requestError) && isFetching));
+  const error = requestError
+    ? requestError instanceof HTTPError && requestError.response.status === 404
+      ? "not-found"
+      : "request"
+    : null;
   const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
   const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
   const isBookmarked = movie ? bookmarkedMovieIds.includes(movie.id) : false;
+  const requestErrorMessage = "영화 정보를 불러오지 못했어요.";
+  const retryButton = (
+    <button
+      className="cursor-pointer rounded-lg bg-[#17191e] px-4 py-2 text-sm font-bold text-white"
+      type="button"
+      disabled={isFetching}
+      aria-busy={isFetching}
+      onClick={() => {
+        void refetch();
+      }}
+    >
+      {isFetching ? "다시 시도 중…" : "다시 시도"}
+    </button>
+  );
 
-  if (!movie) {
+  if (!isValidId || error === "not-found" || !movie) {
     return (
       <main className="grid w-full flex-1 content-center justify-items-center gap-4 px-6 py-20">
         <p className="m-0 text-2xl leading-8 font-bold text-[#17191e]">
@@ -70,20 +48,11 @@ export function MovieDetailPage() {
                 ? "영화 정보를 불러오는 중이에요."
                 : error === "not-found"
                   ? "존재하지 않는 영화예요."
-                  : "영화 정보를 불러오지 못했어요."}
+                  : requestErrorMessage}
           </span>
         </p>
-        {error === "request" && (
-          <button
-            className="cursor-pointer rounded-lg bg-[#17191e] px-4 py-2 text-sm font-bold text-white"
-            type="button"
-            onClick={() => {
-              setResult(null);
-              setRetryCount((count) => count + 1);
-            }}
-          >
-            다시 시도
-          </button>
+        {isValidId && !isLoading && error === "request" && (
+          retryButton
         )}
         <Link className="text-sm leading-5 font-bold text-[#2563eb]" to="/">
           영화 목록으로 돌아가기
@@ -98,6 +67,14 @@ export function MovieDetailPage() {
   return (
     <>
       <main className="w-full flex-[1_0_auto]">
+        {error === "request" && (
+          <div className="flex w-full flex-col items-center gap-4 px-6 py-6">
+            <p className="m-0 text-[#606774]" role="alert">
+              {requestErrorMessage}
+            </p>
+            {retryButton}
+          </div>
+        )}
         <section className="relative h-[360px] w-full overflow-hidden bg-[#17191e] text-white max-[683px]:h-80 max-[463px]:h-[300px]">
           {backdropUrl ? (
             <img

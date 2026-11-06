@@ -1,19 +1,13 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type SubmitEvent } from "react";
 import { toMovieCardMovie } from "../../api/movies/adapters";
-import { searchMovies } from "../../api/movies/search-movies";
-import type { TmdbMovieListResponse } from "../../api/movies/models";
+import { movieSearchQueryOptions } from "../../api/movies/query-options";
 import MovieCard from "../../components/movies/movie-card";
 import { useBookmarkStore } from "../../stores/bookmark-store";
 import { cn } from "../../utils/cn";
 
 type SearchCardView = "default" | "compact";
-
-interface SearchResult {
-  query: string;
-  data: TmdbMovieListResponse | null;
-  error: string | null;
-}
 
 const SEARCH_CARD_VIEW_STORAGE_KEY = "umcine-search-card-view";
 
@@ -34,40 +28,10 @@ export function SearchPage() {
   const [cardView, setCardView] = useState<SearchCardView>(readSearchCardView);
   const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
   const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
-  const [result, setResult] = useState<SearchResult | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
-  const displayQuery = query?.trim() ?? "";
-
-  // Discard cached results even when navigation returns to a previous query.
-  if (result && result.query !== displayQuery) {
-    setResult(null);
-  }
-
-  useEffect(() => {
-    if (!displayQuery) return;
-
-    let isCurrent = true;
-
-    searchMovies({ query: displayQuery })
-      .then((data) => {
-        if (isCurrent) {
-          setResult({ query: displayQuery, data, error: null });
-        }
-      })
-      .catch(() => {
-        if (isCurrent) {
-          setResult({
-            query: displayQuery,
-            data: null,
-            error: "검색 결과를 불러오지 못했어요.",
-          });
-        }
-      });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [displayQuery, retryCount]);
+  const normalizedQuery = query?.trim() ?? "";
+  const { data, isLoading, isError, isFetching, refetch } = useQuery(
+    movieSearchQueryOptions(normalizedQuery),
+  );
 
   useEffect(() => {
     let isCurrent = true;
@@ -83,9 +47,9 @@ export function SearchPage() {
     };
   }, [query]);
 
-  const isLoading = Boolean(displayQuery) && result?.query !== displayQuery;
-  const data = result?.query === displayQuery ? result.data : null;
-  const error = result?.query === displayQuery ? result.error : null;
+  const isRetrying = !data && isError && isFetching;
+  const showLoading = isLoading || isRetrying;
+  const error = isError ? "검색 결과를 불러오지 못했어요." : null;
   const searchResults =
     data?.results.map((movie) => ({
       ...toMovieCardMovie(movie),
@@ -122,7 +86,7 @@ export function SearchPage() {
     }
   }
 
-  if (!displayQuery) {
+  if (!normalizedQuery) {
     return (
       <main className="flex min-h-[calc(100vh-91px)] w-full flex-1 items-center justify-center px-[clamp(16px,5vw,72px)] py-[clamp(80px,12vw,140px)] max-[683px]:min-h-[calc(100vh-75px)]">
         <div className="flex w-full max-w-[720px] -translate-y-20 flex-col items-center gap-7 max-[683px]:-translate-y-6 max-[463px]:-translate-y-4 max-[463px]:gap-6">
@@ -158,15 +122,17 @@ export function SearchPage() {
 
         <div className="flex h-[54px] w-full items-center justify-between border-y border-[#e3e6eb]">
           <h2 className="m-0 min-w-0 text-lg leading-[21px] font-bold text-[#17191e] max-[463px]:overflow-hidden max-[463px]:text-ellipsis max-[463px]:whitespace-nowrap">
-            ‘{displayQuery}’ 검색 결과
+            ‘{normalizedQuery}’ 검색 결과
           </h2>
           <div className="flex flex-none items-center gap-3">
             <span className="text-xs leading-[14px] font-normal text-[#969da8] max-[463px]:hidden">
-              {isLoading
+              {isFetching
                 ? "검색 중…"
                 : error
                   ? "검색 실패"
-                  : `영화 ${data?.total_results ?? 0}편 · ${data?.page ?? 1}페이지`}
+                  : data
+                    ? `영화 ${data.total_results}편 · ${data.page}페이지`
+                    : null}
             </span>
             <div
               className="flex h-8 items-center rounded-lg border border-[#e3e6eb] bg-white p-0.5"
@@ -193,11 +159,11 @@ export function SearchPage() {
           </div>
         </div>
 
-        {isLoading ? (
+        {showLoading ? (
           <p className="m-0 border-b border-[#e3e6eb] py-20 text-center text-lg leading-6 font-bold text-[#606774]" role="status">
             검색 결과를 불러오는 중이에요.
           </p>
-        ) : error ? (
+        ) : error && !isFetching ? (
           <div className="flex flex-col items-center gap-4 border-b border-[#e3e6eb] py-20">
             <p className="m-0 text-lg leading-6 font-bold text-[#606774]" role="alert">
               {error}
@@ -206,8 +172,7 @@ export function SearchPage() {
               className="cursor-pointer rounded-lg bg-[#17191e] px-4 py-2 text-sm font-bold text-white"
               type="button"
               onClick={() => {
-                setResult(null);
-                setRetryCount((count) => count + 1);
+                void refetch();
               }}
             >
               다시 시도
@@ -295,11 +260,11 @@ export function SearchPage() {
               ))}
             </div>
           )
-        ) : (
+        ) : data ? (
           <p className="m-0 border-b border-[#e3e6eb] px-0 py-20 text-center text-lg leading-6 font-bold text-[#606774]" role="status">
             검색 결과가 없어요.
           </p>
-        )}
+        ) : null}
       </main>
 
       <footer className="flex h-[57px] w-full flex-[0_0_auto] items-center justify-end gap-2 border-t border-[#e3e6eb] bg-white px-20 py-4 text-xs leading-[14px] font-normal text-[#606774] max-[1199px]:h-auto max-[1199px]:min-h-[57px] max-[1199px]:px-10 max-[683px]:px-6 max-[463px]:items-start max-[463px]:px-4 max-[463px]:py-3.5">
