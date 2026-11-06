@@ -61,12 +61,12 @@ export default function Header() {
         >
           <img className="block size-6" src="/icons/search.svg" alt="" />
         </Link>
-        <button
-          className="inline-flex h-[42px] w-[71px] cursor-pointer items-center justify-center rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 py-0 text-[14px] leading-[17px] font-extrabold whitespace-nowrap text-white"
-          type="button"
+        <Link
+          className="inline-flex h-[42px] w-[71px] cursor-pointer items-center justify-center rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 py-0 text-[14px] leading-[17px] font-extrabold whitespace-nowrap text-white no-underline"
+          to="/login"
         >
           로그인
-        </button>
+        </Link>
       </div>
     </header>
   );

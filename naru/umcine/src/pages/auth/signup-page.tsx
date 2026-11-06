@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useState, type SubmitEvent } from "react";
 import { checkEmailDuplicate } from "../../api/members/check-email-duplicate";
 import { checkNicknameDuplicate } from "../../api/members/check-nickname-duplicate";
@@ -224,9 +225,9 @@ export function SignupPage() {
         </button>
         <p className="m-0 flex items-end justify-center text-[13px] leading-4 text-[#606774]">
           이미 계정이 있나요?&nbsp;
-          <a className="text-xs leading-[14px] font-extrabold text-[#2563eb] no-underline" href="/login">
+          <Link className="text-xs leading-[14px] font-extrabold text-[#2563eb] no-underline" to="/login">
             로그인
-          </a>
+          </Link>
         </p>
       </form>
     </main>
