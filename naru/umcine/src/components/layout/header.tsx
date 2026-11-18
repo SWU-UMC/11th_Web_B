@@ -1,10 +1,21 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { getMe } from "../../api/members/me";
+import { useAuthStore } from "../../stores/auth-store";
 import { cn } from "../../utils/cn";
 
 const navigationLinkClass =
   "text-center text-[14px]! leading-[17px]! font-bold! no-underline";
 
 export default function Header() {
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const meQuery = useQuery({
+    queryKey: ["members", "me"],
+    queryFn: getMe,
+    enabled: Boolean(accessToken),
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  });
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   });
@@ -68,12 +79,21 @@ export default function Header() {
         >
           <img className="block size-6" src="/icons/search.svg" alt="" />
         </Link>
-        <Link
+        {!accessToken ? <Link
           className="inline-flex h-[42px] w-[71px] cursor-pointer items-center justify-center rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 py-0 text-[14px] leading-[17px] font-extrabold whitespace-nowrap text-white no-underline"
           to="/login"
         >
           로그인
-        </Link>
+        </Link> : meQuery.isLoading ? (
+          <span className="h-[42px] w-24 animate-pulse rounded-lg bg-gray-200" role="status" aria-label="내 정보 조회 중" />
+        ) : (
+          <Link
+            className="inline-flex h-[42px] cursor-pointer items-center justify-center rounded-lg bg-[#2563eb] px-4 text-sm font-extrabold whitespace-nowrap text-white no-underline"
+            to="/mypage"
+          >
+            마이페이지
+          </Link>
+        )}
       </div>
     </header>
   );
