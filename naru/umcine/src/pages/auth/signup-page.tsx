@@ -2,8 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState, type SubmitEvent } from "react";
 import { checkEmailDuplicate } from "../../api/members/check-email-duplicate";
 import { checkNicknameDuplicate } from "../../api/members/check-nickname-duplicate";
-import { signup } from "../../api/members/signup";
-// import { useNavigate } from "@tanstack/react-router";
+import { useSignupMutation } from "../../hooks/use-signup-mutation";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_REGEX =
@@ -30,8 +29,7 @@ export function SignupPage() {
     email: DEFAULT_DUPLICATE_CHECK,
     nickname: DEFAULT_DUPLICATE_CHECK,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  // const navigate = useNavigate();
+  const signupMutation = useSignupMutation();
 
   const isEmailValid = EMAIL_REGEX.test(form.email.trim());
   const isNicknameValid =
@@ -97,24 +95,15 @@ export function SignupPage() {
     }
   };
 
-  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!canSubmit || isSubmitting) return;
-    setIsSubmitting(true);
-    try {
-      const response = await signup({
-        email: form.email.trim(),
-        nickname: form.nickname.trim(),
-        password: form.password,
-      });
-      alert(response.message);
-      // 로그인 페이지 연결 후 사용해요.
-      // navigate({ to: "/login" });
-    } catch {
-      alert("회원가입에 실패했어요. 다시 시도해 주세요.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    if (!canSubmit || signupMutation.isPending) return;
+
+    signupMutation.mutate({
+      email: form.email.trim(),
+      nickname: form.nickname.trim(),
+      password: form.password,
+    });
   };
 
   return (
@@ -139,13 +128,13 @@ export function SignupPage() {
               name="email"
               value={form.email}
               onChange={(event) => handleChangeField("email", event.target.value)}
-              disabled={isSubmitting || duplicateCheck.email.isChecking}
+              disabled={signupMutation.isPending || duplicateCheck.email.isChecking}
               aria-invalid={showEmailError}
               type="email"
               autoComplete="email"
               placeholder="name@example.com"
             />
-            <button className="shrink-0 cursor-pointer bg-transparent p-0 text-xs leading-[14px] font-extrabold text-[#2563eb]" type="button" disabled={!isEmailValid || duplicateCheck.email.isChecking || isSubmitting} onClick={() => void handleCheckDuplicate("email")}>
+            <button className="shrink-0 cursor-pointer bg-transparent p-0 text-xs leading-[14px] font-extrabold text-[#2563eb]" type="button" disabled={!isEmailValid || duplicateCheck.email.isChecking || signupMutation.isPending} onClick={() => void handleCheckDuplicate("email")}>
               {duplicateCheck.email.isChecking ? "확인 중" : "중복 확인"}
             </button>
           </div>
@@ -163,13 +152,13 @@ export function SignupPage() {
               name="nickname"
               value={form.nickname}
               onChange={(event) => handleChangeField("nickname", event.target.value)}
-              disabled={isSubmitting || duplicateCheck.nickname.isChecking}
+              disabled={signupMutation.isPending || duplicateCheck.nickname.isChecking}
               aria-invalid={showNicknameError}
               type="text"
               autoComplete="nickname"
               placeholder="2–12자"
             />
-            <button className="shrink-0 cursor-pointer bg-transparent p-0 text-xs leading-[14px] font-extrabold text-[#2563eb]" type="button" disabled={!isNicknameValid || duplicateCheck.nickname.isChecking || isSubmitting} onClick={() => void handleCheckDuplicate("nickname")}>
+            <button className="shrink-0 cursor-pointer bg-transparent p-0 text-xs leading-[14px] font-extrabold text-[#2563eb]" type="button" disabled={!isNicknameValid || duplicateCheck.nickname.isChecking || signupMutation.isPending} onClick={() => void handleCheckDuplicate("nickname")}>
               {duplicateCheck.nickname.isChecking ? "확인 중" : "중복 확인"}
             </button>
           </div>
@@ -187,7 +176,7 @@ export function SignupPage() {
               name="password"
               value={form.password}
               onChange={(event) => handleChangeField("password", event.target.value)}
-              disabled={isSubmitting}
+              disabled={signupMutation.isPending}
               aria-invalid={showPasswordError}
               type="password"
               autoComplete="new-password"
@@ -211,7 +200,7 @@ export function SignupPage() {
             name="passwordConfirm"
               value={form.passwordConfirm}
               onChange={(event) => handleChangeField("passwordConfirm", event.target.value)}
-              disabled={isSubmitting}
+              disabled={signupMutation.isPending}
               aria-invalid={showPasswordConfirmError}
             type="password"
             autoComplete="new-password"
@@ -220,8 +209,8 @@ export function SignupPage() {
         </div>
 
         {showPasswordConfirmError && <p className="m-0 text-xs text-red-600" role="alert">비밀번호가 일치하지 않아요.</p>}
-        <button disabled={!canSubmit || isSubmitting} className="h-12 disabled:cursor-not-allowed disabled:opacity-50 w-full cursor-pointer rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 text-sm font-extrabold text-white" type="submit">
-          {isSubmitting ? "가입 중" : "가입하기"}
+        <button disabled={!canSubmit || signupMutation.isPending} className="h-12 disabled:cursor-not-allowed disabled:opacity-50 w-full cursor-pointer rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 text-sm font-extrabold text-white" type="submit">
+          {signupMutation.isPending ? "가입 중" : "가입하기"}
         </button>
         <p className="m-0 flex items-end justify-center text-[13px] leading-4 text-[#606774]">
           이미 계정이 있나요?&nbsp;
