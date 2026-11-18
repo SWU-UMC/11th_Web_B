@@ -10,6 +10,7 @@ export default function Header() {
   });
   const isMoviesActive = pathname === "/" || pathname.startsWith("/movies/");
   const isSearchActive = pathname === "/search";
+  const isProfileActive = pathname === "/mypage" || pathname.startsWith("/mypage/");
 
   return (
     <header className="flex h-[91px] w-full shrink-0 items-center justify-between border-b border-[#e3e6eb] bg-white px-20 py-6 max-[1199px]:px-10 max-[683px]:h-auto max-[683px]:min-h-[75px] max-[683px]:px-6 max-[683px]:py-4 max-[463px]:px-4">
@@ -50,7 +51,13 @@ export default function Header() {
           >
             검색
           </Link>
-          <span className={cn(navigationLinkClass, "text-[#606774]")}>내 정보</span>
+          <Link
+            className={cn(navigationLinkClass, isProfileActive
+              ? "text-[#17191e] underline [text-underline-position:from-font]"
+              : "text-[#606774]")}
+            to="/mypage"
+            aria-current={isProfileActive ? "page" : undefined}
+          >내 정보</Link>
         </nav>
       </div>
       <div className="flex items-center gap-2.5 max-[463px]:gap-2">
@@ -61,12 +68,12 @@ export default function Header() {
         >
           <img className="block size-6" src="/icons/search.svg" alt="" />
         </Link>
-        <button
-          className="inline-flex h-[42px] w-[71px] cursor-pointer items-center justify-center rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 py-0 text-[14px] leading-[17px] font-extrabold whitespace-nowrap text-white"
-          type="button"
+        <Link
+          className="inline-flex h-[42px] w-[71px] cursor-pointer items-center justify-center rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 py-0 text-[14px] leading-[17px] font-extrabold whitespace-nowrap text-white no-underline"
+          to="/login"
         >
           로그인
-        </button>
+        </Link>
       </div>
     </header>
   );
