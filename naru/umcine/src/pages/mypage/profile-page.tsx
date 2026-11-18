@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import Pagination from "../../components/movies/pagination";
-import { useProfileStore } from "../../stores/profile-store";
+import { useMeQuery } from "../../hooks/use-me-query";
+import { useAuthStore } from "../../stores/auth-store";
 
 const SAMPLE_FAVORITES = [
   { title: "스파이더맨: 브랜드 뉴 데이", date: "2026.07.29", poster: "/images/profile/spider-man.png" },
@@ -9,7 +10,20 @@ const SAMPLE_FAVORITES = [
 ];
 
 export function ProfilePage() {
-  const profile = useProfileStore((state) => state.profile);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const meQuery = useMeQuery();
+  const profile = accessToken ? meQuery.data : undefined;
+
+  if (!accessToken) {
+    return <main className="px-6 py-10"><p role="alert">로그인이 필요해요.</p></main>;
+  }
+  if (!profile) {
+    return (
+      <main className="px-6 py-10">
+        {meQuery.isError ? <><p role="alert">내 정보를 불러오지 못했어요.</p><button type="button" disabled={meQuery.isFetching} onClick={() => void meQuery.refetch()}>다시 시도</button></> : <p role="status">내 정보를 불러오는 중이에요.</p>}
+      </main>
+    );
+  }
 
   return (
     <>
@@ -23,7 +37,7 @@ export function ProfilePage() {
           <h2 className="m-0 text-[17px] leading-5 font-bold" id="profile-info-title">기본 정보</h2>
           <div className="flex items-center gap-7 max-[463px]:items-start">
             <span className="grid size-[82px] shrink-0 place-items-center overflow-hidden rounded-full bg-[#e3e6eb]">
-              {profile.image ? <img className="size-full object-cover" src={profile.image} alt="프로필" /> : <img className="block" src="/icons/profile-person.svg" alt="기본 프로필" />}
+              <img className="block" src="/icons/profile-person.svg" alt="기본 프로필" />
             </span>
             <dl className="m-0 flex w-full max-w-[760px] gap-7 max-[683px]:flex-col max-[683px]:gap-4">
               <div className="flex min-w-0 flex-1 flex-col gap-1.5">

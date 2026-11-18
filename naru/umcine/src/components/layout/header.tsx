@@ -1,6 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { getMe } from "../../api/members/me";
+import { useMeQuery } from "../../hooks/use-me-query";
 import { useAuthStore } from "../../stores/auth-store";
 import { cn } from "../../utils/cn";
 
@@ -9,13 +8,7 @@ const navigationLinkClass =
 
 export default function Header() {
   const accessToken = useAuthStore((state) => state.accessToken);
-  const meQuery = useQuery({
-    queryKey: ["members", "me"],
-    queryFn: getMe,
-    enabled: Boolean(accessToken),
-    staleTime: 5 * 60 * 1000,
-    retry: false,
-  });
+  const meQuery = useMeQuery();
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   });

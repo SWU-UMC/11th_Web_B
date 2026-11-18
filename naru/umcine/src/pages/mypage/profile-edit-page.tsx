@@ -1,12 +1,19 @@
 import { useRef, useState, type ChangeEvent, type SubmitEvent } from "react";
 
-import { useProfileStore } from "../../stores/profile-store";
+import { useUpdateMeMutation } from "../../hooks/use-update-me-mutation";
+import { useMeQuery } from "../../hooks/use-me-query";
+import { useAuthStore } from "../../stores/auth-store";
 
 export function ProfileEditPage() {
-  const profile = useProfileStore((state) => state.profile);
-  const updateProfile = useProfileStore((state) => state.updateProfile);
-  const [nickname, setNickname] = useState(profile.nickname);
-  const [profileImage, setProfileImage] = useState(profile.image);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const meQuery = useMeQuery();
+  const profile = accessToken ? meQuery.data : undefined;
+  const updateMeMutation = useUpdateMeMutation();
+  const [nicknameInput, setNickname] = useState<string | null>(null);
+  const nickname = nicknameInput ?? profile?.nickname ?? "";
+  const trimmedNickname = nickname.trim();
+  const canSubmit = Boolean(profile) && trimmedNickname.length >= 2 && trimmedNickname.length <= 12;
+  const [profileImage, setProfileImage] = useState("");
   const imageInput = useRef<HTMLInputElement>(null);
 
   const handleChangeImage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -26,24 +33,30 @@ export function ProfileEditPage() {
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (nickname.trim().length < 2 || nickname.trim().length > 12) {
-      alert("닉네임은 2~12자로 입력해 주세요.");
-      return;
-    }
-    setNickname(nickname.trim());
-    updateProfile({ nickname: nickname.trim(), image: profileImage });
-    alert("변경한 내용을 화면에 반영했어요. 서버 저장은 아직 연결되지 않았어요.");
+    if (!canSubmit || updateMeMutation.isPending) return;
+    updateMeMutation.mutate({ nickname: trimmedNickname });
   };
+
+  if (!accessToken) {
+    return <main className="px-6 py-10"><p role="alert">로그인이 필요해요.</p></main>;
+  }
+  if (!profile) {
+    return (
+      <main className="px-6 py-10">
+        {meQuery.isError ? <><p role="alert">내 정보를 불러오지 못했어요.</p><button type="button" disabled={meQuery.isFetching} onClick={() => void meQuery.refetch()}>다시 시도</button></> : <p role="status">내 정보를 불러오는 중이에요.</p>}
+      </main>
+    );
+  }
 
   return (
     <main className="flex w-full flex-1 flex-col gap-8 px-20 py-6 max-[1199px]:px-10 max-[683px]:px-6 max-[463px]:px-4">
       <div className="flex items-center justify-between gap-4 max-[463px]:flex-wrap">
         <div className="flex flex-col gap-[9px]">
           <h1 className="m-0 text-[31px] leading-[37px] font-bold tracking-[-1.24px]">내 정보 수정</h1>
-          <p className="m-0 text-sm leading-[22.4px] text-[#606774]">닉네임과 프로필 이미지만 변경할 수 있어요.</p>
+          <p className="m-0 text-sm leading-[22.4px] text-[#606774]">닉네임을 변경할 수 있어요. 프로필 이미지는 미리보기만 제공해요.</p>
         </div>
-        <button className="h-[42px] shrink-0 cursor-pointer rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 text-sm font-extrabold text-white" type="submit" form="profile-form">
-          변경사항 저장
+        <button className="h-[42px] shrink-0 cursor-pointer rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 text-sm font-extrabold text-white" type="submit" form="profile-form" disabled={!canSubmit || updateMeMutation.isPending}>
+          {updateMeMutation.isPending ? "저장 중" : "변경사항 저장"}
         </button>
       </div>
 
@@ -70,7 +83,7 @@ export function ProfileEditPage() {
           <div className="flex flex-col gap-2">
             <label className="text-[13px] leading-4 font-extrabold" htmlFor="profile-nickname">닉네임</label>
             <div className="flex min-h-[49px] items-center gap-2 rounded-lg border border-[#e3e6eb] bg-white px-[13px] py-[14px] focus-within:border-[#2563eb]">
-              <input className="min-w-0 flex-1 bg-transparent px-0.5 text-sm leading-[19px] outline-none" id="profile-nickname" name="nickname" autoComplete="nickname" value={nickname} onChange={(event) => setNickname(event.target.value)} />
+              <input className="min-w-0 flex-1 bg-transparent px-0.5 text-sm leading-[19px] outline-none" id="profile-nickname" name="nickname" autoComplete="nickname" value={nickname} disabled={updateMeMutation.isPending} onChange={(event) => setNickname(event.target.value)} />
               <button className="shrink-0 cursor-pointer bg-transparent p-0 text-xs font-extrabold text-[#2563eb]" type="button" onClick={() => alert("닉네임 중복 확인은 내 정보 API 연동 시 연결할 예정이에요.")}>중복 확인</button>
             </div>
           </div>
