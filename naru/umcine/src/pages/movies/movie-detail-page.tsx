@@ -1,3 +1,4 @@
+import { MovieRating } from "../../components/movies/movie-rating";
 import { Link, useParams } from "@tanstack/react-router";
 import { HTTPError } from "ky";
 import { useQuery } from "@tanstack/react-query";
@@ -173,33 +174,7 @@ export function MovieDetailPage() {
             <h2 className="m-0 w-full text-[21px] leading-[26px] font-bold tracking-[-0.63px] text-[#17191e]">
               내 평점
             </h2>
-            <p className="m-0 w-full text-xs leading-[14px] font-normal text-[#969da8]">
-              별점은 필수, 후기는 선택이에요.
-            </p>
-            <div className="flex w-full items-start gap-1" aria-label="영화 별점">
-              {[1, 2, 3, 4, 5].map((score) => (
-                <span
-                  className="grid size-[38px] flex-[0_0_38px] place-items-center rounded-lg border border-[#e3e6eb] bg-white"
-                  key={score}
-                  aria-label={`${score}점`}
-                >
-                  <img className="block size-6" src="/icons/star-outline.svg" alt="" />
-                </span>
-              ))}
-            </div>
-            <textarea
-              className="h-[102px] w-full resize-none rounded-lg border border-[#e3e6eb] bg-white px-3 pt-4 pb-[18px] font-[inherit] text-[13px] leading-[19.5px] font-normal text-[#17191e] outline-none placeholder:text-[#969da8] placeholder:opacity-100"
-              aria-label="영화 후기"
-              placeholder="영화를 보고 느낀 점을 남겨보세요."
-              readOnly
-            />
-            <button
-              className="inline-flex h-[42px] w-full items-center justify-center rounded-lg border! border-solid! border-white! bg-[#17191e] px-4 text-sm leading-[17px] font-extrabold text-white opacity-100"
-              type="button"
-              disabled
-            >
-              평점 저장
-            </button>
+            <MovieRating movieId={movie.id} />
           </aside>
         </section>
       </main>
