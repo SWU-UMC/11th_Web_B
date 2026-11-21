@@ -2,7 +2,7 @@ import { Link, useParams } from "@tanstack/react-router";
 import { HTTPError } from "ky";
 import { useQuery } from "@tanstack/react-query";
 import { movieDetailQueryOptions } from "../../api/movies/query-options";
-import { useBookmarkStore } from "../../stores/bookmark-store";
+import { useFavoriteStatusQuery, useToggleFavorite } from "../../hooks/use-favorites";
 import { getTmdbBackdropUrl, getTmdbPosterUrl } from "../../utils/tmdb-image";
 
 export function MovieDetailPage() {
@@ -19,9 +19,9 @@ export function MovieDetailPage() {
       ? "not-found"
       : "request"
     : null;
-  const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
-  const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
-  const isBookmarked = movie ? bookmarkedMovieIds.includes(movie.id) : false;
+  const favoriteQuery = useFavoriteStatusQuery(id);
+  const { toggleFavorite, isPending: isFavoritePending } = useToggleFavorite();
+  const isBookmarked = favoriteQuery.data?.isFavorite ?? false;
   const requestErrorMessage = "영화 정보를 불러오지 못했어요.";
   const retryButton = (
     <button
@@ -151,12 +151,14 @@ export function MovieDetailPage() {
             <p className="m-0 text-sm leading-6 font-normal text-[#606774]">
               {movie.overview || "줄거리 정보가 없어요."}
             </p>
+            {favoriteQuery.isError && <p role="alert">즐겨찾기를 불러오지 못했어요. <button type="button" disabled={favoriteQuery.isFetching} onClick={() => void favoriteQuery.refetch()}>다시 시도</button></p>}
             <button
               className="inline-flex h-[42px] w-fit cursor-pointer items-center justify-center gap-2 rounded-lg border! border-solid! border-white! bg-[#2563eb] px-4 text-[14px]! leading-[17px]! font-extrabold! whitespace-nowrap text-white"
               type="button"
               aria-label={`${movie.title} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`}
               aria-pressed={isBookmarked}
-              onClick={() => toggleBookmark(movie.id)}
+              disabled={isFavoritePending || favoriteQuery.isLoading || favoriteQuery.isError}
+              onClick={() => toggleFavorite(movie.id, isBookmarked)}
             >
               <img
                 className="block size-4 invert"

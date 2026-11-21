@@ -4,7 +4,7 @@ import { useEffect, useState, type SubmitEvent } from "react";
 import { toMovieCardMovie } from "../../api/movies/adapters";
 import { movieSearchQueryOptions } from "../../api/movies/query-options";
 import MovieCard from "../../components/movies/movie-card";
-import { useBookmarkStore } from "../../stores/bookmark-store";
+import { useFavoritesQuery, useToggleFavorite } from "../../hooks/use-favorites";
 import { cn } from "../../utils/cn";
 
 type SearchCardView = "default" | "compact";
@@ -26,8 +26,8 @@ export function SearchPage() {
   const navigate = useNavigate({ from: "/search" });
   const [searchInput, setSearchInput] = useState(query ?? "");
   const [cardView, setCardView] = useState<SearchCardView>(readSearchCardView);
-  const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
-  const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
+  const favoritesQuery = useFavoritesQuery();
+  const { toggleFavorite, isPending: isFavoritePending } = useToggleFavorite();
   const normalizedQuery = query?.trim() ?? "";
   const { data, isLoading, isError, isFetching, refetch } = useQuery(
     movieSearchQueryOptions(normalizedQuery),
@@ -182,7 +182,7 @@ export function SearchPage() {
           cardView === "default" ? (
             <div className="grid grid-cols-2 gap-x-10 max-[1199px]:grid-cols-1">
               {searchResults.map((movie) => {
-                const isBookmarked = bookmarkedMovieIds.includes(movie.id);
+                const isBookmarked = favoritesQuery.data?.some((favorite) => favorite.movieId === movie.id) ?? false;
 
                 return (
                   <article
@@ -211,7 +211,9 @@ export function SearchPage() {
                         type="button"
                         aria-label={`${movie.title} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`}
                         aria-pressed={isBookmarked}
-                        onClick={() => toggleBookmark(movie.id)}
+                        disabled={isFavoritePending || favoritesQuery.isLoading}
+                        title={favoritesQuery.isError ? "즐겨찾기 조회 실패 · 클릭하여 다시 시도" : undefined}
+                        onClick={() => favoritesQuery.isError ? void favoritesQuery.refetch() : toggleFavorite(movie.id, isBookmarked)}
                       >
                         <img
                           className="block size-6 invert"

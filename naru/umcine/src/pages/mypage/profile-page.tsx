@@ -1,13 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import Pagination from "../../components/movies/pagination";
+import { FavoriteMovies } from "../../components/movies/favorite-movies";
 import { useMeQuery } from "../../hooks/use-me-query";
 import { useAuthStore } from "../../stores/auth-store";
-
-const SAMPLE_FAVORITES = [
-  { title: "스파이더맨: 브랜드 뉴 데이", date: "2026.07.29", poster: "/images/profile/spider-man.png" },
-  { title: "오디세이", date: "2026.08.05", poster: "/images/profile/odyssey.png" },
-  { title: "미니언즈 & 몬스터즈", date: "2026.07.15", poster: "/images/profile/minions.png" },
-];
 
 export function ProfilePage() {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -54,18 +48,7 @@ export function ProfilePage() {
 
         <section className="flex flex-col gap-4" aria-labelledby="profile-favorites-title">
           <h2 className="m-0 text-[17px] leading-5 font-bold" id="profile-favorites-title">내 즐겨찾기</h2>
-          <div className="grid grid-cols-5 gap-x-[18px] gap-y-5 pb-5 max-[1199px]:grid-cols-3 max-[683px]:grid-cols-2 max-[463px]:grid-cols-1">
-            {SAMPLE_FAVORITES.map((movie) => (
-              <article className="flex min-w-0 flex-col gap-1" key={movie.title}>
-                <img className="h-[274px] w-full rounded-[10px] object-cover max-[1199px]:h-auto max-[1199px]:aspect-[121/137]" src={movie.poster} alt={`${movie.title} 포스터`} />
-                <h3 className="m-0 truncate pt-[5px] text-sm leading-[17px] font-extrabold">{movie.title}</h3>
-                <p className="m-0 text-xs leading-[14px] text-[#969da8]">{movie.date}</p>
-              </article>
-            ))}
-          </div>
-          <div className="[&>nav]:mt-0">
-            <Pagination currentPage={1} totalPages={1} onPageChange={() => {}} />
-          </div>
+          <FavoriteMovies />
         </section>
       </main>
       <footer className="flex min-h-[57px] items-center justify-end gap-2 border-t border-[#e3e6eb] bg-white px-20 py-4 text-xs leading-[14px] text-[#606774] max-[1199px]:px-10 max-[683px]:px-6 max-[463px]:px-4">

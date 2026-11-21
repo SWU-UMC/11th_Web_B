@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useBookmarkStore } from "../../stores/bookmark-store";
+import { useFavoritesQuery, useToggleFavorite } from "../../hooks/use-favorites";
 import type { MovieCardMovie } from "../../types/movie-card";
 import { cn } from "../../utils/cn";
 
@@ -8,10 +8,9 @@ interface MovieCardProps {
 }
 
 export default function MovieCard({ movie }: MovieCardProps) {
-  const isBookmarked = useBookmarkStore((state) =>
-    state.bookmarkedMovieIds.includes(movie.id),
-  );
-  const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
+  const favoritesQuery = useFavoritesQuery();
+  const { toggleFavorite, isPending } = useToggleFavorite();
+  const isBookmarked = favoritesQuery.data?.some((favorite) => favorite.movieId === movie.id) ?? false;
 
   return (
     <article className="flex h-[318px] w-full flex-col items-start gap-1 max-[1199px]:h-auto">
@@ -43,7 +42,9 @@ export default function MovieCard({ movie }: MovieCardProps) {
           type="button"
           aria-label={`${movie.title} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`}
           aria-pressed={isBookmarked}
-          onClick={() => toggleBookmark(movie.id)}
+          disabled={isPending || favoritesQuery.isLoading}
+          title={favoritesQuery.isError ? "즐겨찾기 조회 실패 · 클릭하여 다시 시도" : undefined}
+          onClick={() => favoritesQuery.isError ? void favoritesQuery.refetch() : toggleFavorite(movie.id, isBookmarked)}
         >
           <img
             className="block size-6 invert"
