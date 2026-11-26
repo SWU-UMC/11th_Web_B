@@ -8,6 +8,7 @@ if (!tmdbApiBaseUrl || !tmdbAccessToken) {
 export const env = {
   tmdbApiBaseUrl,
   tmdbAccessToken,
+  apiBaseUrl: import.meta.env.VITE_API_BASE_URL || '',
 };
 
 export const TMDB_IMAGE_BASE_URL =

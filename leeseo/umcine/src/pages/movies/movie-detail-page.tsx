@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
+
 import { getMovieDetail } from "../../api/movies/get-movie-detail";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaStar } from "react-icons/fa6";
 import { BookmarkButton } from "../../components/bookmark-button";
 import { TMDB_IMAGE_BASE_URL } from "../../config/env";
-import type { TmdbMovieDetail } from "../../api/models";
 import Footer from "../../components/layout/footer";
 
 const MovieDetailPage = () => {
@@ -13,21 +14,15 @@ const MovieDetailPage = () => {
     from: "/movies/$movieId",
   });
 
-  const [movie, setMovie] = useState<TmdbMovieDetail>();
+  // 영화 상세 정보 조회
+  const movieQuery = useQuery({
+    queryKey: ["movies", "detail", movieId],
+    queryFn: () => getMovieDetail(Number(movieId)),
+  });
 
-  useEffect(() => {
-    async function loadMovieDetail() {
-      try {
-        const response = await getMovieDetail(Number(movieId));
-        setMovie(response);
-      } catch (error) {
-        console.error("영화 상세 정보를 불러오지 못했어요.", error);
-      }
-    }
+  const movie = movieQuery.data;
 
-    loadMovieDetail();
-  }, [movieId]);
-
+  // 별점 및 한 줄 평 상태
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
 
@@ -45,6 +40,17 @@ const MovieDetailPage = () => {
     alert("평점이 저장되었습니다.");
   };
 
+  // 로딩 상태
+  if (movieQuery.isPending) {
+    return <main>영화 상세 정보를 불러오는 중이에요.</main>;
+  }
+
+  // 오류 상태
+  if (movieQuery.isError) {
+    return <main>영화 상세 정보를 불러오지 못했어요.</main>;
+  }
+
+  // 영화가 없는 경우
   if (!movie) {
     return <main>영화를 찾을 수 없어요.</main>;
   }
@@ -98,6 +104,7 @@ const MovieDetailPage = () => {
 
         {/* 하단 상세 정보 영역 */}
         <section className="box-border grid min-h-[375px] grid-cols-[200px_minmax(0,1fr)_360px] gap-6 px-[5.5%] py-4 max-[1100px]:grid-cols-[160px_minmax(0,1fr)] max-[1100px]:gap-5 max-[768px]:grid-cols-[110px_minmax(0,1fr)] max-[768px]:gap-4 max-[768px]:px-5 max-[480px]:grid-cols-[90px_minmax(0,1fr)] max-[480px]:gap-3 max-[480px]:px-4">
+
           {/* 왼쪽: 포스터 */}
           <div className="h-[286px] w-[200px] max-[1100px]:w-full max-[768px]:h-auto max-[768px]:w-full">
             <img
@@ -120,7 +127,7 @@ const MovieDetailPage = () => {
             </p>
 
             {/* 즐겨찾기 버튼 */}
-            <BookmarkButton 
+            <BookmarkButton
               movieId={movie.id}
               hasText={true}
               className="mt-3 inline-flex h-9 w-fit min-w-[100px] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-[5px] border-0 bg-[#2563eb] px-[14px] py-2 text-[13px] font-semibold text-white"
@@ -143,7 +150,7 @@ const MovieDetailPage = () => {
                 <button
                   key={star}
                   type="button"
-                  className={`flex h-[27px] w-[27px] items-center justify-center rounded-md border border-[#e5e7eb] bg-white text-[#6b7280] transition-colors hover:bg-[#fef3c7] ${
+                  className={`flex h-[27px] w-[27px] items-center justify-center rounded-md border border-[#e5e7eb] bg-white transition-colors hover:bg-[#fef3c7] ${
                     rating >= star
                       ? "text-[#facc15]"
                       : "text-[#6b7280]"
@@ -161,9 +168,7 @@ const MovieDetailPage = () => {
               className="box-border h-[75px] w-full resize-y rounded-[7px] border border-[#e5e7eb] bg-white p-3 font-inherit text-xs leading-[1.6] text-[#17191e] outline-none placeholder:text-[#9ca3af] focus:border-[#2563eb]"
               placeholder="영화를 보고 느낀 점을 남겨보세요."
               value={review}
-              onChange={(e) =>
-                setReview(e.target.value)
-              }
+              onChange={(e) => setReview(e.target.value)}
             />
 
             {/* 평점 저장 */}
@@ -176,7 +181,8 @@ const MovieDetailPage = () => {
           </div>
         </section>
       </main>
-      <Footer/>
+
+      <Footer />
     </>
   );
 };

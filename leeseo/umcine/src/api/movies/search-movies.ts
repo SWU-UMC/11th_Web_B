@@ -8,7 +8,7 @@ interface SearchMoviesRequest {
 
 type SearchMoviesResponse = TmdbMovieListResponse;
 
-function searchMovies({ query, page = 1 }: SearchMoviesRequest) {
+function getSearchMovies({ query, page = 1 }: SearchMoviesRequest) {
   return tmdbClient
     .get("search/movie", {
       searchParams: {
@@ -22,7 +22,7 @@ function searchMovies({ query, page = 1 }: SearchMoviesRequest) {
 }
 
 export {
-  searchMovies,
+  getSearchMovies,
   type SearchMoviesRequest,
   type SearchMoviesResponse,
 };
